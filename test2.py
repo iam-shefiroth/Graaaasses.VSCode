@@ -8,6 +8,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import LabelEncoder
+from pandas import Series
+from janome.analyzer import Analyzer
+from janome.charfilter import RegexReplaceCharFilter
+from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter
 import pandas
 import re
  
@@ -123,3 +127,54 @@ if __name__ == '__main__':
     vectorized = feature_vectorizer.transform(X_test)
     y_pred = classifier.predict(vectorized)
     print(classification_report(y_test, y_pred,target_names=label_vectorizer.classes_))
+
+    feature_to_weight = dict()
+    for w, name in zip(classifier.coef_[0], feature_vectorizer.get_feature_names()):
+        feature_to_weight[name] = w
+    se = Series(feature_to_weight)
+    se.sort_values(ascending=False, inplace=True)
+    print("Positive or Negative")
+    print("--Positiveの判定に効いた素性")
+    print(se[:20])
+    print("--Negativeの判定に効いた素性")
+    print(se[-20:])
+    print("--" * 50)
+
+    def validate():
+        # 学習
+        classifier = LogisticRegression()
+        transformed_X_train = feature_vectorizer.fit_transform(X_train)
+        classifier.fit(transformed_X_train, y_train)
+        # 評価
+        vectorized = feature_vectorizer.transform(X_test)
+        y_pred = classifier.predict(vectorized)
+        print(classification_report(y_test, y_pred))
+        # モデルのダンプ
+        feature_to_weight = dict()
+        for w, name in zip(classifier.coef_[0], feature_vectorizer.get_feature_names()):
+            feature_to_weight[name] = w
+        se = Series(feature_to_weight)
+        se.sort_values(ascending=False, inplace=True)
+        print("--Positiveの判定に効いた素性")
+        print(se[:20])
+        print("--Negativeの判定に効いた素性")
+        print(se[-20:])
+        print("--" * 50)
+        return y_pred
+    
+    # 前処理
+    char_filters = [
+        RegexReplaceCharFilter("^[『「【].*[』」】]", ""),
+        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", "")]
+    # 後処理
+    token_filters = [
+        POSKeepFilter(['名詞', '動詞', '形容詞', '副詞']),
+        ExtractAttributeFilter("base_form")]
+    # Tokenizerの再初期化
+    tokenizer = Tokenizer()
+    # 前処理・後処理が追加されたVectorizerに変更
+    analyzer = Analyzer(char_filters=char_filters, tokenizer=tokenizer, token_filters=token_filters)
+    feature_vectorizer = CountVectorizer(binary=True, analyzer=analyzer.analyze)
+    # 再評価
+    result = validate()
+    
