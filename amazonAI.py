@@ -36,7 +36,7 @@ def get_all_reviews(url):
         i += 1                              #　ループ番号を更新
         text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
         amazon_bs = BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
-        gazou  = amazon_bs.select('.a-fixed-left-grid-col')
+        gazou  = amazon_bs.select('.a-fixed-left-grid-col img')
         
         for j in range(len(gazou)):
             article = {
@@ -44,7 +44,7 @@ def get_all_reviews(url):
             }
             review_list.append(article)                      #　レビュー情報をreview_listに格納
         
-        return gazou
+        return review_list
  
 #インポート時は実行されないように記載
 if __name__ == '__main__':
