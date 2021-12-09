@@ -55,7 +55,7 @@ def get_all_reviews(url):
             next_url = 'https://www.amazon.co.jp/' + next_page[0].attrs['href']    
             url = next_url  # 次のページのURLをセットする
 
-            sleep(1.5)        # 最低でも1秒は間隔をあける(サーバへ負担がかからないようにする)
+            sleep(2)        # 最低でも1秒は間隔をあける(サーバへ負担がかからないようにする)
         else:               # 次のページが存在しない場合は処理を終了
             break
  
@@ -78,7 +78,8 @@ if __name__ == '__main__':
     # urls.append('https://www.amazon.co.jp/%E3%82%A8%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AD%E3%83%8B%E3%83%83%E3%82%AF%E3%83%BB%E3%82%A2%E3%83%BC%E3%83%84-Battlefield-V-%E3%83%90%E3%83%88%E3%83%AB%E3%83%95%E3%82%A3%E3%83%BC%E3%83%AB%E3%83%89V-PS4/product-reviews/B07D85MDDM/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews')
     # urls.append('https://www.amazon.co.jp/%E3%82%B3%E3%83%BC%E3%82%A8%E3%83%BC%E3%83%86%E3%82%AF%E3%83%A2%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%B9-%E4%BB%81%E7%8E%8B2/product-reviews/B07ZSZVL9S/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews')
     
-    urls.append('https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%81%82%E3%81%A4%E3%81%BE%E3%82%8C-%E3%81%A9%E3%81%86%E3%81%B6%E3%81%A4%E3%81%AE%E6%A3%AE-Switch/dp/B084HPGQ9W/ref=sr_1_17?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&keywords=%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%BD%E3%83%95%E3%83%88&qid=1638935911&s=videogames&sr=1-17')
+    #↓上一つダイパリマメイク
+    urls.append('https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9D%E3%82%B1%E3%83%83%E3%83%88%E3%83%A2%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%BC-%E3%82%B7%E3%83%A3%E3%82%A4%E3%83%8B%E3%83%B3%E3%82%B0%E3%83%91%E3%83%BC%E3%83%AB-Switch/dp/B09CL27VBB/ref=sr_1_3?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&keywords=%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%BD%E3%83%95%E3%83%88+%E3%83%9D%E3%82%B1%E3%83%A2%E3%83%B3&qid=1639013515&sr=8-3')
     # urls.append('https://www.amazon.co.jp/%E3%82%B9%E3%82%AF%E3%82%A6%E3%82%A7%E3%82%A2%E3%83%BB%E3%82%A8%E3%83%8B%E3%83%83%E3%82%AF%E3%82%B9-%E3%80%90PS4%E3%80%91%E3%83%89%E3%83%A9%E3%82%B4%E3%83%B3%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88XI-%E9%81%8E%E3%81%8E%E5%8E%BB%E3%82%8A%E3%81%97%E6%99%82%E3%82%92%E6%B1%82%E3%82%81%E3%81%A6/dp/B06Y63281P/ref=sr_1_1?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&keywords=%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%BD%E3%83%95%E3%83%88+%E3%83%89%E3%83%A9%E3%82%AF%E3%82%A8&qid=1638936119&sr=8-1')
     # urls.append('https://www.amazon.co.jp/%E3%82%BC%E3%83%AB%E3%83%80%E3%81%AE%E4%BC%9D%E8%AA%AC-%E3%83%96%E3%83%AC%E3%82%B9-%E3%82%AA%E3%83%96-%E3%83%AF%E3%82%A4%E3%83%AB%E3%83%89-Switch/product-reviews/B01N12HJHQ/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews')
     # urls.append('https://www.amazon.co.jp/%E6%A1%83%E5%A4%AA%E9%83%8E%E9%9B%BB%E9%89%84-%E6%98%AD%E5%92%8C-%E5%B9%B3%E6%88%90-%E4%BB%A4%E5%92%8C%E3%82%82%E5%AE%9A%E7%95%AA/dp/B08DD1F4RP/ref=sr_1_38?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&keywords=%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%BD%E3%83%95%E3%83%88+%E3%83%89%E3%83%A9%E3%82%AF%E3%82%A8&qid=1638936119&sr=8-38')
@@ -88,25 +89,25 @@ if __name__ == '__main__':
         review_list = get_all_reviews(review_url)
         a = 0
         b = 0
-        for review in review_list:
-            if review["label"] == "5つ星のうち5.0":
-                review["label"] = "ポジ"
-                a += 1
-            elif review["label"] == "5つ星のうち4.0":
-                review["label"] = "ポジ"
-                a += 1
-            elif review["label"] == "5つ星のうち3.0":
-                review["label"] = "ネガ"
-                b += 1
-            elif review["label"] == "5つ星のうち2.0":
-                review["label"] = "ネガ"
-                b += 1
-            elif review["label"] == "5つ星のうち1.0":
-                review["label"] = "ネガ"
-                b += 1
+        # for review in review_list:
+        #     if review["label"] == "5つ星のうち5.0":
+        #         review["label"] = "ポジ"
+        #         a += 1
+        #     elif review["label"] == "5つ星のうち4.0":
+        #         review["label"] = "ポジ"
+        #         a += 1
+        #     elif review["label"] == "5つ星のうち3.0":
+        #         review["label"] = "ネガ"
+        #         b += 1
+        #     elif review["label"] == "5つ星のうち2.0":
+        #         review["label"] = "ネガ"
+        #         b += 1
+        #     elif review["label"] == "5つ星のうち1.0":
+        #         review["label"] = "ネガ"
+        #         b += 1
             
         #CSVにレビュー情報の書き出し
-        with open(r'z:\UserProfile\s20193085\Desktop\data\etc\reviewData{0}.csv'.format(k),'w', encoding='CP932', errors='ignore') as f:
+        with open(r'z:\UserProfile\s20193085\Desktop\data\review\reviewData{0}.csv'.format(k),'w', encoding='CP932', errors='ignore') as f:
             writer = csv.writer(f, lineterminator='\n')
             # 全データを表示
             for review in review_list:
