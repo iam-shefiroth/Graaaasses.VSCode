@@ -1,7 +1,7 @@
 from flask import *
 
 
-class resultData():
+class ResultData():
     url:str                     #url（リンク）
     name:str                    #商品名
     img:str                     #画像
