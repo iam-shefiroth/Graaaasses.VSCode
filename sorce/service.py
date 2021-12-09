@@ -2,9 +2,9 @@ from flask import *
 from PIL import Image
 from dataclasses import dataclass
 
-from sorce.resultData import resultData
+from sorce.resultData import ResultData, resultData
 
-#テスト用（後に消します）
+#テスト用データ（後に消します）
 testname = "マリオカート"
 #↓要パス変更
 testimg = Image.open("z:\UserProfile\s20193085\Desktop\data\etc\mariokart8dx_test.jpg")
@@ -16,8 +16,19 @@ testnega1 = "ワルイージしかいないマリオカートだったので売�
 testnega2 = "打開しないと勝てないしアイテム運ゲーで明暗を分けるクソゲーなので捨てました。"
 testnega3 = "Сука, Блядь, бля, блять, черепашки, недорезанные!!!!"
 
+#入力されたURLから情報を取得する。
 def reviewSelection(url):
     
-    selectionInfo = resultData.overviewInsert(testurl,testname,testimg)
-    selectionInfo += resultData.overviewInsert(testposi1)
+    #レビューのスクレイピング（予定）
+    
+    #レビューをAI
+    selectionInfo = ResultData()
+    selectionInfo.overviewInsert(testurl,testname,testimg)
+    selectionInfo.positiveInsert(testposi1)
+    selectionInfo.positiveInsert(testposi2)
+    selectionInfo.positiveInsert(testposi3)
+    selectionInfo.negativeInsert(testnega1)
+    selectionInfo.negativeInsert(testnega2)
+    selectionInfo.negativeInsert(testnega3)
+    
     return selectionInfo
