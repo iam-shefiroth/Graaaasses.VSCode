@@ -1,0 +1,44 @@
+.errorMessage{
+    color: red;
+    font-size: 20px;
+}
+
+.center-text{
+    text-align: center;
+}
+
+.inner{
+    width:80%;
+    margin: 0 auto;
+    max-width: 800px;
+    margin-top: 20rem;
+}
+
+.top-title{
+    font-size: 50px;
+}
+
+.select-design{
+    border-top-left-radius: 30px; 
+    border-bottom-left-radius: 30px; 
+    width: 60px; 
+    background-color: white; 
+    border: none;
+}
+.button-design{
+    border-top-right-radius: 30px; 
+    border-bottom-right-radius: 30px; 
+    width: 60px; 
+    background-color: white; 
+    border: none;
+}
+.form-inner{
+    width: 90%;
+    margin:  0 auto;
+    max-width: 500px;
+}
+
+.shadow-me{
+    box-shadow: 0 4px 6px 1px rgba(0, 0, 0, 0.30),
+                0px -1px rgba(0, 0, 0, 0.30);
+}
