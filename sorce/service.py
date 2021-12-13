@@ -15,6 +15,8 @@ testposi3 = "子供がよく遊んでます。"
 testnega1 = "ワルイージしかいないマリオカートだったので売りました。"
 testnega2 = "打開しないと勝てないしアイテム運ゲーで明暗を分けるクソゲーなので捨てました。"
 testnega3 = "Сука, Блядь, бля, блять, черепашки, недорезанные!!!!"
+testposiper = 67
+testnegaper = 33
 
 #入力されたURLから情報を取得する。
 def reviewSelection(url):
@@ -23,7 +25,8 @@ def reviewSelection(url):
     
     #レビューをAI
     selectionInfo = ResultData()
-    selectionInfo.overviewInsert(testurl,testname,testimg)
+    #処理結果を処理結果クラスに挿入する（試験用テストを使用中、消してね）
+    selectionInfo.overviewInsert(testurl,testname,testimg,testposiper,testnegaper)
     selectionInfo.positiveInsert(testposi1)
     selectionInfo.positiveInsert(testposi2)
     selectionInfo.positiveInsert(testposi3)
