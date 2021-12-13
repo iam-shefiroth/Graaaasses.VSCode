@@ -7,7 +7,7 @@ from sorce.resultData import ResultData, resultData
 #テスト用データ（後に消します）
 testname = "マリオカート"
 #↓要パス変更
-testimg = Image.open("z:\UserProfile\s20193085\Desktop\data\etc\mariokart8dx_test.jpg")
+#testimg = Image.open("z:\UserProfile\s20193085\Desktop\data\etc\mariokart8dx_test.jpg")
 testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%8[…]ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
 testposi1 = "このゲームは素晴らしいです。"
 testposi2 = "操作性も良くて神ゲー"
