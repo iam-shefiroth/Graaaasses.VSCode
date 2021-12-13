@@ -25,24 +25,49 @@ if __name__ == '__main__':
      
     #　Amzon商品ページ
     review_list = []
-    for i in range(8):
-        csv_file = open(r'z:\UserProfile\s20192087\Desktop\etc\reviewData{0}-完.csv'.format(i), "r", encoding="ms932", errors="", newline="" )
+    for i in range(16):
+        csv_file = open(r'z:\UserProfile\s20192087\Desktop\etc\reviewData{0}.csv'.format(i), "r", encoding="ms932", errors="", newline="" )
         #リスト形式
         f = csv.reader(csv_file, delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
         f = csv.reader(csv_file, delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
         a = 0
         b = 0
         for row in f:
-            article = {
+            if row[0] == "5つ星のうち5.0":
+                row[0] = "ポジ"
+                article = {
                 "label": row[0],
                 "text": row[1],
-            }
-            if row[0] == "ポジ" and a < 700:
+                }
+                # if a < 600:
                 a += 1
                 review_list.append(article) 
-            elif row[0] == "ネガ":
+            elif row[0] == "5つ星のうち4.0":
+                row[0] = "ポジ"
+                article = {
+                "label": row[0],
+                "text": row[1],
+                }
+                # if a < 600:
+                a += 1
+                review_list.append(article) 
+            elif row[0] == "5つ星のうち2.0":
+                row[0] = "ネガ"
+                article = {
+                "label": row[0],
+                "text": row[1],
+                }
                 b += 1
-                review_list.append(article)  
+                review_list.append(article)
+            elif row[0] == "5つ星のうち1.0":
+                row[0] = "ネガ"
+                article = {
+                "label": row[0],
+                "text": row[1],
+                }
+                b += 1
+                review_list.append(article)
+
         csv_file.close()
     
     df = pandas.DataFrame(review_list)
@@ -51,13 +76,15 @@ if __name__ == '__main__':
     labels_size = group_by_label.size()
     print(labels_size)
     
+    n = labels_size.min()
+    dataset = group_by_label.apply(lambda x: x.sample(n, random_state=0))
     label_vectorizer = LabelEncoder()
-    transformed_label = label_vectorizer.fit_transform(df.get("label"))
-    df["label"] = transformed_label
+    transformed_label = label_vectorizer.fit_transform(dataset.get("label"))
+    dataset["label"] = transformed_label
     # 入力と出力に分割
-    x, y = df.get("text"), df.get("label")
+    x, y = dataset.get("text"), dataset.get("label")
     # 学習とテストデータに9:1で分割
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.1, stratify=y, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, stratify=y, random_state=0)
     # それぞれの数があっているか確認
     print([len(c) for c in [X_train, X_test, y_train, y_test]])
 
@@ -108,7 +135,6 @@ if __name__ == '__main__':
     
     # 前処理
     char_filters = [
-        RegexReplaceCharFilter("^[『「【].*[』」】]", ""),
         RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", "")]
     # 後処理
     token_filters = [
@@ -121,4 +147,12 @@ if __name__ == '__main__':
     feature_vectorizer = CountVectorizer(binary=True, analyzer=analyzer.analyze)
     # 再評価
     result = validate()
-    
+    #　検証用のDataFrameを作成
+    validate_df = pandas.concat([X_test, y_test], axis=1)
+    validate_df["y_pred"] = result
+    # 予測とラベルが異なるものを抽出
+    false_positive = validate_df.query("y_pred == 1 & label == 0")
+    print(false_positive)
+    print("--------------------")
+    false_negative = validate_df.query("y_pred == 0 & label == 1")
+    print(false_negative)
