@@ -1,4 +1,5 @@
 from time import sleep
+import bs4
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
@@ -29,14 +30,37 @@ def get_amazon_page_info(url):
     driver.quit()                           #　chromeブラウザを閉じる
     
     return text                             #　取得したページ情報を返す
+    # ASIN取得2
+def get_asin_from_amazon_2(url):
+     
+    asin = ""
+    #　ヘッドレスモードでブラウザを起動
+    options = Options()
+    options.add_argument('--headless')
+     
+    # ブラウザーを起動
+    driver = webdriver.Chrome("z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe", options=options)
+    driver.get(url)
+    driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
+     
+    elem_base = driver.find_element_by_id('ASIN')
+    if elem_base:
+        asin = elem_base.get_attribute("value")
+    else:
+        print("NG")
+         
+    # ブラウザ停止
+    driver.quit()
+     
+    return asin
 
 #商品の情報をリストにする
 def get_product_overview(url):
     overview_list = []
     print("now_reading_page")
-    text = get_amazon_page_info(url)
+    text = get_asin_from_amazon_2(url)
     print(text)
-    amazon_bs = BeautifulSoup(text,features='lxml')
+    amazon_bs = bs4.BeautifulSoup(text,features='lxml')
     
     #amazonの商品情報を取得
     title = amazon_bs.select_one('.product-title-word-break')
@@ -61,7 +85,7 @@ def get_all_reviews(url):
         print(i,'page_search')              #　処理状況を表示
         i += 1                              #　ループ番号を更新
         text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
-        amazon_bs = BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
+        amazon_bs = bs4.BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
         review_title = amazon_bs.select('a.review-title')
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
         stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
