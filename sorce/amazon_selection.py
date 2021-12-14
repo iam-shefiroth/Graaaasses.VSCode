@@ -39,7 +39,7 @@ def get_asin_from_amazon_2(url):
     options.add_argument('--headless')
      
     # ブラウザーを起動
-    driver = webdriver.Chrome("z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe", options=options)
+    driver = webdriver.Chrome("z:/UserProfile/s20193085/Desktop/data/etc/chromedriver.exe", options=options)
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
      
@@ -113,13 +113,13 @@ def get_all_reviews(url):
 
     #テスト用実行(amazonレビューget用)※後に消せ
 if __name__ == '__main__':
-    # print("goto overview")
-    # testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%AB%E3%83%BC%E3%83%888-%E3%83%87%E3%83%A9%E3%83%83%E3%82%AF%E3%82%B9-Switch/dp/B01N12G06K?ref_=Oct_d_obs_d_637394&pd_rd_w=tdtgg&pf_rd_p=03b65386-84ce-4d82-8c83-dd9d2863fe54&pf_rd_r=7324W03N2CXES5GZP2V0&pd_rd_r=2c99141f-47e1-4744-8965-105b19ea3a38&pd_rd_wg=0FBhj&pd_rd_i=B01N12G06Khttps://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%AB%E3%83%BC%E3%83%888-%E3%83%87%E3%83%A9%E3%83%83%E3%82%AF%E3%82%B9-Switch/dp/B01N12G06K?ref_=Oct_d_obs_d_637394&pd_rd_w=tdtgg&pf_rd_p=03b65386-84ce-4d82-8c83-dd9d2863fe54&pf_rd_r=7324W03N2CXES5GZP2V0&pd_rd_r=2c99141f-47e1-4744-8965-105b19ea3a38&pd_rd_wg=0FBhj&pd_rd_i=B01N12G06K"
-    # overview_list = get_product_overview(testurl)
-    # print(overview_list)
-    
-    print("goto allreview")
-    testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3-%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%BA-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/product-reviews/B097C67NF2/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
-    overview_list = get_all_reviews(testurl)
+    print("goto overview")
+    testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%AB%E3%83%BC%E3%83%888-%E3%83%87%E3%83%A9%E3%83%83%E3%82%AF%E3%82%B9-Switch/dp/B01N12G06K?ref_=Oct_d_obs_d_637394&pd_rd_w=tdtgg&pf_rd_p=03b65386-84ce-4d82-8c83-dd9d2863fe54&pf_rd_r=7324W03N2CXES5GZP2V0&pd_rd_r=2c99141f-47e1-4744-8965-105b19ea3a38&pd_rd_wg=0FBhj&pd_rd_i=B01N12G06Khttps://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%AB%E3%83%BC%E3%83%888-%E3%83%87%E3%83%A9%E3%83%83%E3%82%AF%E3%82%B9-Switch/dp/B01N12G06K?ref_=Oct_d_obs_d_637394&pd_rd_w=tdtgg&pf_rd_p=03b65386-84ce-4d82-8c83-dd9d2863fe54&pf_rd_r=7324W03N2CXES5GZP2V0&pd_rd_r=2c99141f-47e1-4744-8965-105b19ea3a38&pd_rd_wg=0FBhj&pd_rd_i=B01N12G06K"
+    overview_list = get_product_overview(testurl)
     print(overview_list)
+    
+    # print("goto allreview")
+    # testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3-%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%BA-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/product-reviews/B097C67NF2/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+    # overview_list = get_all_reviews(testurl)
+    # print(overview_list)
     
