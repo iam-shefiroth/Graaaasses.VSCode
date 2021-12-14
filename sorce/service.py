@@ -3,6 +3,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 import resultData
+import amazon_selection
 
 #テスト用データ（後に消します）
 testname = "マリオカート"
