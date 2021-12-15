@@ -4,8 +4,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import textwrap
-import cv2
-import matplotlib.pyplot as plt
 
 #windows(chromedriver.exeのパスを設定)※要変更
 chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
@@ -70,13 +68,8 @@ def get_product_overview(url):
     title = amazon_bs.select_one('.product-title-word-break')
     title = title.text.replace("\n", "").replace("\u3000", "").strip()
     # 商品の画像
-    image = amazon_bs.select_one('#landingImage')
-    image = image.attr['src']
-    print(image)
-    # image = cv2.imread(image)
-    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    # plt.imshow(image)
-    # plt.show()
+    image = amazon_bs.select('#main-image-container > ul > li.image.item.itemNo0.maintain-height.selected > span > span > div > img')
+    image = image[0].attrs['src']
     # 商品の全レビューURL
     all_review_page = amazon_bs.select_one('#reviews-medley-footer > div.a-row.a-spacing-medium a')
     all_review_page ='https://www.amazon.co.jp/'  + all_review_page.attrs['href']
@@ -84,9 +77,9 @@ def get_product_overview(url):
     category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
     category = category.text.replace("\n", "").replace("\u3000", "").strip()
     
-    
+    overview_list.append(url)
     overview_list.append(title)
-    # overview_list.append(image)
+    overview_list.append(image)
     overview_list.append(category)
     overview_list.append(all_review_page)
     
@@ -130,9 +123,9 @@ def get_all_reviews(url):
 if __name__ == '__main__':
     print("goto overview")
     # ↓ダウンロードしたAmazonページ（マリオカート）
-    testurl = "z:/UserProfile/s20193085/Desktop/data/check/Amazon _ マリオカート8 デラックス - Switch _ ゲーム.html"
+    # testurl = "z:/UserProfile/s20193085/Desktop/data/check/Amazon _ マリオカート8 デラックス - Switch _ ゲーム.html"
     # ↓実際のAmazonページのURL ※スクレイピングブロック対策
-    # testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%81%82%E3%81%A4%E3%81%BE%E3%82%8C-%E3%81%A9%E3%81%86%E3%81%B6%E3%81%A4%E3%81%AE%E6%A3%AE-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B084H8S45Q/ref=pd_rhf_cr_s_pd_crcd_1/355-8689788-2301132?pd_rd_w=TRTBY&pf_rd_p=6bd17f5e-1bac-4f3b-97c7-064c882625e5&pf_rd_r=HKQ6JVHAWKK4JGD61V3V&pd_rd_r=8eb328d6-fa31-44bc-b334-9e840202ee68&pd_rd_wg=vDQ72&pd_rd_i=B084H8S45Q&psc=1"
+    testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%81%82%E3%81%A4%E3%81%BE%E3%82%8C-%E3%81%A9%E3%81%86%E3%81%B6%E3%81%A4%E3%81%AE%E6%A3%AE-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B084H8S45Q/ref=pd_rhf_cr_s_pd_crcd_1/355-8689788-2301132?pd_rd_w=TRTBY&pf_rd_p=6bd17f5e-1bac-4f3b-97c7-064c882625e5&pf_rd_r=HKQ6JVHAWKK4JGD61V3V&pd_rd_r=8eb328d6-fa31-44bc-b334-9e840202ee68&pd_rd_wg=vDQ72&pd_rd_i=B084H8S45Q&psc=1"
     overview_list = get_product_overview(testurl)
     print(overview_list)
     
