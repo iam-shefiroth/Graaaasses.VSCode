@@ -1,7 +1,3 @@
-from time import sleep
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
 from sklearn.model_selection import train_test_split
 from janome.tokenizer import Tokenizer
 from sklearn.linear_model import LogisticRegression
@@ -13,10 +9,9 @@ from janome.analyzer import Analyzer
 from janome.charfilter import RegexReplaceCharFilter
 from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter
 import pandas
-import re
 import csv
-import textwrap
- 
+from gensim.models import word2vec
+import pickle
 #windows(chromedriver.exeのパスを設定)
 chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
 
@@ -28,7 +23,6 @@ if __name__ == '__main__':
     for i in range(16):
         csv_file = open(r'z:\UserProfile\s20192087\Desktop\etc\reviewData{0}.csv'.format(i), "r", encoding="ms932", errors="", newline="" )
         #リスト形式
-        f = csv.reader(csv_file, delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
         f = csv.reader(csv_file, delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
         a = 0
         b = 0
@@ -88,37 +82,43 @@ if __name__ == '__main__':
     # それぞれの数があっているか確認
     print([len(c) for c in [X_train, X_test, y_train, y_test]])
 
-    tokenizer = Tokenizer(wakati=True)
-    feature_vectorizer = CountVectorizer(binary=True, analyzer=tokenizer.tokenize)
-    # 学習
-    classifier = LogisticRegression()
-    transformed_X_train = feature_vectorizer.fit_transform(X_train)
-    classifier.fit(transformed_X_train, y_train)
+    # tokenizer = Tokenizer(wakati=True)
+    # feature_vectorizer = CountVectorizer(binary=True, analyzer=tokenizer.tokenize)
+    # # 学習
+    # classifier = LogisticRegression()
+    # transformed_X_train = feature_vectorizer.fit_transform(X_train)
+    # classifier.fit(transformed_X_train, y_train)
 
-    vectorized = feature_vectorizer.transform(X_test)
-    y_pred = classifier.predict(vectorized)
-    print(classification_report(y_test, y_pred,target_names=label_vectorizer.classes_))
+    # vectorized = feature_vectorizer.transform(X_test)
+    # y_pred = classifier.predict(vectorized)
+    # print(classification_report(y_test, y_pred,target_names=label_vectorizer.classes_))
 
-    feature_to_weight = dict()
-    for w, name in zip(classifier.coef_[0], feature_vectorizer.get_feature_names()):
-        feature_to_weight[name] = w
-    se = Series(feature_to_weight)
-    se.sort_values(ascending=False, inplace=True)
-    print("Positive or Negative")
-    print("--Positiveの判定に効いた素性")
-    print(se[:20])
-    print("--Negativeの判定に効いた素性")
-    print(se[-20:])
-    print("--" * 50)
+    # feature_to_weight = dict()
+    # for w, name in zip(classifier.coef_[0], feature_vectorizer.get_feature_names()):
+    #     feature_to_weight[name] = w
+    # se = Series(feature_to_weight)
+    # se.sort_values(ascending=False, inplace=True)
+    # print("Positive or Negative")
+    # print("--Positiveの判定に効いた素性")
+    # print(se[:20])
+    # print("--Negativeの判定に効いた素性")
+    # print(se[-20:])
+    # print("--" * 50)
 
     def validate():
         # 学習
         classifier = LogisticRegression()
+        print(X_train)
+        print(X_test)
+        print(y_train)
+        print(y_test)
         transformed_X_train = feature_vectorizer.fit_transform(X_train)
         classifier.fit(transformed_X_train, y_train)
         # 評価
         vectorized = feature_vectorizer.transform(X_test)
+        print(vectorized)
         y_pred = classifier.predict(vectorized)
+        print(y_pred)
         print(classification_report(y_test, y_pred))
         # モデルのダンプ
         feature_to_weight = dict()
@@ -127,10 +127,11 @@ if __name__ == '__main__':
         se = Series(feature_to_weight)
         se.sort_values(ascending=False, inplace=True)
         print("--Positiveの判定に効いた素性")
-        print(se[:20])
+        print(se[:50])
         print("--Negativeの判定に効いた素性")
-        print(se[-20:])
+        print(se[-50:])
         print("--" * 50)
+        pickle.dump(classifier,open('amazon_review.pkl', 'wb'))
         return y_pred
     
     # 前処理
@@ -145,6 +146,7 @@ if __name__ == '__main__':
     # 前処理・後処理が追加されたVectorizerに変更
     analyzer = Analyzer(char_filters=char_filters, tokenizer=tokenizer, token_filters=token_filters)
     feature_vectorizer = CountVectorizer(binary=True, analyzer=analyzer.analyze)
+    pickle.dump(feature_vectorizer,open('count_vec.pkl', 'wb'))
     # 再評価
     result = validate()
     #　検証用のDataFrameを作成
@@ -153,6 +155,6 @@ if __name__ == '__main__':
     # 予測とラベルが異なるものを抽出
     false_positive = validate_df.query("y_pred == 1 & label == 0")
     print(false_positive)
-    print("--------------------")
+    print("--" * 50)
     false_negative = validate_df.query("y_pred == 0 & label == 1")
     print(false_negative)
