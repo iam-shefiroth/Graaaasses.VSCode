@@ -24,9 +24,9 @@ testnegaper = 33
 def reviewSelection(url):
     
     #商品の情報を取得する。
-    
+    overview = amazon_selection.get_product_overview(url)
     #レビューのスクレイピングを取得する
-    
+    all_review = amazon_selection.get_all_reviews(url)
     #レビューのポジネガ判定
     
     #取得結果を配列に挿入する
