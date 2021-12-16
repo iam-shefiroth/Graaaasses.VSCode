@@ -13,7 +13,7 @@ np.seterr(divide='ignore')
 
 
 # livedoorトピックニュースのファイル名一覧を取得する
-paths = r'z:\UserProfile\s20192004\Desktop\data\etc\reviewData6.csv'
+paths = r'z:\UserProfile\s20192004\Desktop\data\etc\reviewData4y.csv'
 texts = []
 text = []
 i = 0
@@ -27,7 +27,6 @@ with open(paths) as f:
         i= i + 1
             
 
-print(texts[566])
 print(i)
 
 class CorpusElement:
@@ -49,20 +48,26 @@ for text2 in texts:
 
 
 
+
+
 # pn_ja.dicファイルから、単語をキー、極性値を値とする辞書を得る
 def load_pn_dict():
     dic = {}
     
-    with codecs.open(r'C:\data2\Nho\pn_ja.dic', 'r', 'UTF-8') as f:
+    with codecs.open(r'C:\data2\amazon\review_weightP.txt', 'r', 'UTF-8') as f:
         lines = f.readlines()
-        
+        i = 0
         for line in lines:
             # 各行は"良い:よい:形容詞:0.999995"
-            columns = line.split(':')
-            dic[columns[0]] = float(columns[3])
+             # 先頭2行は不要なメタ情報のため、削除
+            
+            columns = line.split(',')
+            
+            s = columns[1].replace(" \r\n","")
+            dic[columns[0]] = float(s)
+            i = i + 1
             
     return dic
-
 
 # トークンリストから極性値リストを得る
 def get_pn_scores(tokens, pn_dic):
@@ -83,24 +88,19 @@ print(pn_dic['良い'])
 # 各文章の極性値リストを得る
 for element in naive_corpus:
     element.pn_scores = get_pn_scores(element.tokens, pn_dic)
-# 1件目の文章の極性値を表示する
-print(naive_corpus[474].pn_scores)
 
 
-# 平均値が最も高い5件を表示
-for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores)/len(e.pn_scores), reverse=True)[:10]:
-    try:
-        print('Average: {:.3f}'.format(sum(element.pn_scores)/len(element.pn_scores)))
-    except ZeroDivisionError:
-        print('Error')
+
+# 最も高い5件を表示
+for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:5]:
+    print('Average: {:.3f}'.format(sum(element.pn_scores)))
+    print('Positib: {}'.format(io.StringIO(element.text2).readline()))
 # Error
     
-
+print("-------------------------------------------------------------------------------------")
   
 
 # 平均値が最も低い5件を表示
-for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores)/len(e.pn_scores))[:10]:
-    try:
-        print('Average: {:.3f}'.format(sum(element.pn_scores)/len(element.pn_scores)))
-    except ZeroDivisionError:
-        print(error)
+for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:5]:
+    print('Average: {:.3f}'.format(sum(element.pn_scores)))
+    print('Negatib: {}'.format(io.StringIO(element.text2).readline()))
