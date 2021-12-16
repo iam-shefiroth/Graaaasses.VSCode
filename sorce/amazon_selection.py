@@ -39,7 +39,7 @@ def get_asin_from_amazon_2(url):
     options.add_argument('--headless')
      
     # ブラウザーを起動
-    driver = webdriver.Chrome("z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe", options=options)
+    driver = webdriver.Chrome("z:/UserProfile/s20193085/Desktop/data/etc/chromedriver.exe", options=options)
     driver.get(url)
     driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
      
@@ -58,23 +58,31 @@ def get_asin_from_amazon_2(url):
 def get_product_overview(url):
     overview_list = []
     print("now_reading_page")
-    text = get_asin_from_amazon_2(url)
-    print(text)
+    text = get_amazon_page_info(url)
+    # print(text)
     amazon_bs = bs4.BeautifulSoup(text,features='lxml')
     
     #amazonの商品情報を取得
+    
+    # ↓商品名
     title = amazon_bs.select_one('.product-title-word-break')
-    #image = amazon_bs.select_one('li.imageThumbnail span.a-button-next img')
-    all_review_page = amazon_bs.select_one('a.a-link-emphasis href')
-    category = amazon_bs.select_one('span.a-link-item a')
-    # overview_list.append(title)
-    # overview_list.append(image)
-    # overview_list.append(category)
-    # overview_list.append(all_review_page)
-    print(title)
-    #print(image)
-    print(all_review_page)
-    print(category)
+    title = title.text.replace("\n", "").replace("\u3000", "").strip()
+    # 商品の画像
+    image = amazon_bs.select('#main-image-container > ul > li.image.item.itemNo0.maintain-height.selected > span > span > div > img')
+    image = image[0].attrs['src']
+    # 商品の全レビューURL
+    all_review_page = amazon_bs.select_one('#reviews-medley-footer > div.a-row.a-spacing-medium a')
+    all_review_page ='https://www.amazon.co.jp/'  + all_review_page.attrs['href']
+    # 商品のカテゴリー
+    category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
+    category = category.text.replace("\n", "").replace("\u3000", "").strip()
+    
+    overview_list.append(url)
+    overview_list.append(title)
+    overview_list.append(image)
+    overview_list.append(category)
+    overview_list.append(all_review_page)
+    
     return overview_list
 
 # 全ページ分をリストにする
@@ -113,13 +121,15 @@ def get_all_reviews(url):
 
     #テスト用実行(amazonレビューget用)※後に消せ
 if __name__ == '__main__':
-    # print("goto overview")
-    # testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%AB%E3%83%BC%E3%83%888-%E3%83%87%E3%83%A9%E3%83%83%E3%82%AF%E3%82%B9-Switch/dp/B01N12G06K?ref_=Oct_d_obs_d_637394&pd_rd_w=tdtgg&pf_rd_p=03b65386-84ce-4d82-8c83-dd9d2863fe54&pf_rd_r=7324W03N2CXES5GZP2V0&pd_rd_r=2c99141f-47e1-4744-8965-105b19ea3a38&pd_rd_wg=0FBhj&pd_rd_i=B01N12G06Khttps://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%AB%E3%83%BC%E3%83%888-%E3%83%87%E3%83%A9%E3%83%83%E3%82%AF%E3%82%B9-Switch/dp/B01N12G06K?ref_=Oct_d_obs_d_637394&pd_rd_w=tdtgg&pf_rd_p=03b65386-84ce-4d82-8c83-dd9d2863fe54&pf_rd_r=7324W03N2CXES5GZP2V0&pd_rd_r=2c99141f-47e1-4744-8965-105b19ea3a38&pd_rd_wg=0FBhj&pd_rd_i=B01N12G06K"
-    # overview_list = get_product_overview(testurl)
-    # print(overview_list)
-    
-    print("goto allreview")
-    testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3-%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%BA-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/product-reviews/B097C67NF2/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
-    overview_list = get_all_reviews(testurl)
+    print("goto overview")
+    # ↓ダウンロードしたAmazonページ（マリオカート）
+    # testurl = "z:/UserProfile/s20193085/Desktop/data/check/Amazon _ マリオカート8 デラックス - Switch _ ゲーム.html"
+    # ↓実際のAmazonページのURL ※スクレイピングブロック対策
+    testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%81%82%E3%81%A4%E3%81%BE%E3%82%8C-%E3%81%A9%E3%81%86%E3%81%B6%E3%81%A4%E3%81%AE%E6%A3%AE-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B084H8S45Q/ref=pd_rhf_cr_s_pd_crcd_1/355-8689788-2301132?pd_rd_w=TRTBY&pf_rd_p=6bd17f5e-1bac-4f3b-97c7-064c882625e5&pf_rd_r=HKQ6JVHAWKK4JGD61V3V&pd_rd_r=8eb328d6-fa31-44bc-b334-9e840202ee68&pd_rd_wg=vDQ72&pd_rd_i=B084H8S45Q&psc=1"
+    overview_list = get_product_overview(testurl)
     print(overview_list)
+    
+    # print("goto allreview")
+    # overview_list = get_all_reviews(overview_list[2])
+    # print(overview_list)
     

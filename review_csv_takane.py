@@ -69,41 +69,8 @@ if __name__ == '__main__':
     urls = []
     # スイッチ
     # urls.append('https://www.amazon.co.jp/%E3%82%BC%E3%83%AB%E3%83%80%E3%81%AE%E4%BC%9D%E8%AA%AC-%E3%83%96%E3%83%AC%E3%82%B9-%E3%82%AA%E3%83%96-%E3%83%AF%E3%82%A4%E3%83%AB%E3%83%89-Switch/product-reviews/B01N12HJHQ/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews')
-    urls.append('https://www.amazon.co.jp/%E3%83%90%E3%83%B3%E3%83%80%E3%82%A4-BANDAI-%E3%81%9F%E3%81%BE%E3%81%94%E3%81%A3%E3%81%A1%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88-Tamagotchi-%E3%82%A2%E3%83%8B%E3%83%90%E3%83%BC%E3%82%B5%E3%83%AA%E3%83%BC%E3%82%BB%E3%83%83%E3%83%88/dp/B09DX967ZQ/ref=cm_cr_arp_d_product_top?ie=UTF8')
+    urls.append('https://www.amazon.co.jp/%E3%83%90%E3%83%B3%E3%83%80%E3%82%A4-BANDAI-%E3%81%9F%E3%81%BE%E3%81%94%E3%81%A3%E3%81%A1%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88-Tamagotchi-%E3%82%A2%E3%83%8B%E3%83%90%E3%83%BC%E3%82%B5%E3%83%AA%E3%83%BC%E3%82%BB%E3%83%83%E3%83%88/product-reviews/B09DX967ZQ/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews')
     for k, url in enumerate(urls, start=8):
         review_list = []
         review_url = url.replace('dp', 'product-reviews')
         review_list = get_all_reviews(review_url)
-        # a = 0
-        # b = 0
-        # for review in review_list:
-        #     if review["label"] == "5つ星のうち5.0":
-        #         review["label"] = "ポジ"
-        #         a += 1
-        #     elif review["label"] == "5つ星のうち4.0":
-        #         review["label"] = "ポジ"
-        #         a += 1
-        #     elif review["label"] == "5つ星のうち3.0":
-        #         review["label"] = "ネガ"
-        #         b += 1
-        #     elif review["label"] == "5つ星のうち2.0":
-        #         review["label"] = "ネガ"
-        #         b += 1
-        #     elif review["label"] == "5つ星のうち1.0":
-        #         review["label"] = "ネガ"
-        #         b += 1
-            
-        # #CSVにレビュー情報の書き出し
-        # with open(r'z:\UserProfile\s20193085\Desktop\data\review\sakuraData{0}.csv'.format(k),'w', encoding='CP932', errors='ignore') as f:
-        #     writer = csv.writer(f, lineterminator='\n')
-        #     # 全データを表示
-        #     for review in review_list:
-        #         csvlist=[]
-        #         #データ作成
-        #         csvlist.append(review["label"])
-        #         csvlist.append(review["text"])
-        #         # 出力    
-        #         writer.writerow(csvlist)
-        #     # ファイルクローズ
-        #     print("csv",k)
-        #     f.close()
