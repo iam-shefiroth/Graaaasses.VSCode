@@ -60,7 +60,6 @@ def get_all_reviews(url):
             review = article['text']
             review_list.append(review)                      #　レビュー情報をreview_listに格納
 
-
              
         next_page = amazon_bs.select('li.a-last a')         # 「次へ」ボタンの遷移先取得
         
@@ -133,10 +132,6 @@ for text2 in review_list:
     tokens = naive_tokenizer.tokenize(text2)
     element = CorpusElement(text2, tokens)
     naive_corpus.append(element)
-
-
-
-
 
 # pn_ja.dicファイルから、単語をキー、極性値を値とする辞書を得る
 def load_pn_dict():
