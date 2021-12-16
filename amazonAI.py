@@ -189,7 +189,7 @@ n_per = n/len(review_list)
 print("ポジ%",p_per)
 print("ネガ%",n_per)
 
-print("ベスト5")
+print("ベスト3")
 # 最も高い3件を表示
 for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:3]:
     print('ポジティブ度: {:.3f}'.format(sum(element.pn_scores)))
@@ -197,7 +197,7 @@ for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True
     print("--" * 50)
 # Error
   
-print("ワースト5")
+print("ワースト3")
 # 平均値が最も低い3件を表示
 for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:3]:
     print('ネガティブ度: {:.3f}'.format(sum(element.pn_scores)))
