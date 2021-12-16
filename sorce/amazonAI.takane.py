@@ -18,7 +18,7 @@ import numpy as np
 import io
 np.seterr(divide='ignore') 
 #windows(chromedriver.exeのパスを設定)
-chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
+chrome_path = r"z:/UserProfile/s20193085/Desktop/data/etc/chromedriver.exe"
  
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
@@ -137,7 +137,7 @@ for text2 in review_list:
 def load_pn_dict():
     dic = {}
     
-    with codecs.open(r'Z:\UserProfile\s20192087\Desktop\Tem\Graaaasses.VSCode\review_weightP.txt', 'r', 'UTF-8') as f:
+    with codecs.open(r'Z:/UserProfile/s20193085/Desktop/AIService/Graaaasses/Graaaasses/review_weightP.txt', 'r', 'UTF-8') as f:
         lines = f.readlines()
         i = 0
         for line in lines:
