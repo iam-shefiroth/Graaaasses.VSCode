@@ -48,8 +48,8 @@ def get_all_reviews(url):
 
         for j in range(len(stars)):
             article = {
+            # "label": stars[j].text,
             "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
-            "label": stars[j].text,
             }
             review_list.append(article)                      #　レビュー情報をreview_listに格納
 
@@ -105,6 +105,7 @@ if __name__ == '__main__':
     analyzer = Analyzer(char_filters=char_filters, tokenizer=tokenizer, token_filters=token_filters)
     feature_vectorizer = CountVectorizer(binary=True, analyzer=analyzer.analyze)
     df = pandas.DataFrame(review_list)
-    vectorized = feature_vectorizer.transform(df.get("text"))
+    x = df.get("text")
+    vectorized = feature_vectorizer.transform(x)
     pre = model.predict(vectorized)
     print(pre)

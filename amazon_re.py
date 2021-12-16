@@ -1,5 +1,5 @@
 import json
-from os import error
+from os import P_DETACH, error
 from janome.tokenizer import Tokenizer
 import glob
 import codecs
@@ -16,18 +16,18 @@ np.seterr(divide='ignore')
 paths = r'z:\UserProfile\s20192004\Desktop\data\etc\reviewData4y.csv'
 texts = []
 text = []
-i = 0
+cnt = 0
 with open(paths) as f:
     original_text = csv.reader(f)
 
 
     for row in original_text:
         text.append(row)
-        texts.append(text[i][1])
-        i= i + 1
+        texts.append(text[cnt][1])
+        cnt= cnt + 1
             
 
-print(i)
+print(cnt)
 
 class CorpusElement:
     def __init__(self, text='', tokens=[], pn_scores=[]):
@@ -86,10 +86,22 @@ print(pn_dic['良い'])
 # 0.999995
 
 # 各文章の極性値リストを得る
+p = 0
+n = 0
 for element in naive_corpus:
     element.pn_scores = get_pn_scores(element.tokens, pn_dic)
+    ans = sum(element.pn_scores)
 
+    if ans > 0:
+        p += 1
+    else:
+        n += 1
 
+p_per = p/cnt
+n_per = n/cnt
+
+print(p_per)
+print(n_per)
 
 # 最も高い5件を表示
 for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:5]:
