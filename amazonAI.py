@@ -167,6 +167,10 @@ def get_pn_scores(tokens, pn_dic):
         
     return scores
 
+
+# 感情極性対応表のロード
+pn_dic = load_pn_dict()
+
 # 各文章の極性値リストを得る
 p = 0
 n = 0
@@ -182,8 +186,8 @@ for element in naive_corpus:
 p_per = p/len(review_list)
 n_per = n/len(review_list)
 
-print(p_per)
-print(n_per)
+print("ポジ",p_per)
+print("ネガ",n_per)
 
 # 最も高い5件を表示
 for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:5]:
