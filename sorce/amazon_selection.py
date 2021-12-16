@@ -10,10 +10,6 @@ chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
 
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
-
-#テスト用url※後に消せ
-testurl:str
-
  
 #　amazonのレビュー情報をseleniumで取得する_引数：amazonの商品URL
 def get_amazon_page_info(url):
@@ -97,6 +93,7 @@ def get_all_reviews(url):
         review_title = amazon_bs.select('a.review-title')
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
         stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
+        # print(text)
         
         for j in range(len(stars)):
             article = {
@@ -118,18 +115,3 @@ def get_all_reviews(url):
             break
     return review_list
 
-
-    #テスト用実行(amazonレビューget用)※後に消せ
-if __name__ == '__main__':
-    print("goto overview")
-    # ↓ダウンロードしたAmazonページ（マリオカート）
-    # testurl = "z:/UserProfile/s20193085/Desktop/data/check/Amazon _ マリオカート8 デラックス - Switch _ ゲーム.html"
-    # ↓実際のAmazonページのURL ※スクレイピングブロック対策
-    testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%81%82%E3%81%A4%E3%81%BE%E3%82%8C-%E3%81%A9%E3%81%86%E3%81%B6%E3%81%A4%E3%81%AE%E6%A3%AE-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B084H8S45Q/ref=pd_rhf_cr_s_pd_crcd_1/355-8689788-2301132?pd_rd_w=TRTBY&pf_rd_p=6bd17f5e-1bac-4f3b-97c7-064c882625e5&pf_rd_r=HKQ6JVHAWKK4JGD61V3V&pd_rd_r=8eb328d6-fa31-44bc-b334-9e840202ee68&pd_rd_wg=vDQ72&pd_rd_i=B084H8S45Q&psc=1"
-    overview_list = get_product_overview(testurl)
-    print(overview_list)
-    
-    # print("goto allreview")
-    # overview_list = get_all_reviews(overview_list[2])
-    # print(overview_list)
-    
