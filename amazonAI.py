@@ -12,6 +12,11 @@ from janome.charfilter import RegexReplaceCharFilter
 from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter
 import pandas
 from janome.tokenizer import Tokenizer
+from os import P_DETACH, error
+import codecs
+import numpy as np
+import io
+np.seterr(divide='ignore') 
 #windows(chromedriver.exeのパスを設定)
 chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
  
@@ -45,13 +50,16 @@ def get_all_reviews(url):
         amazon_bs = BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
         stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
-
+        r_list = list(reviews)
         for j in range(len(stars)):
+
             article = {
-            # "label": stars[j].text,
             "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
+            "label": stars[j].text,
             }
-            review_list.append(article)                      #　レビュー情報をreview_listに格納
+            review = article['text']
+            review_list.append(review)                      #　レビュー情報をreview_listに格納
+
 
              
         next_page = amazon_bs.select('li.a-last a')         # 「次へ」ボタンの遷移先取得
@@ -90,22 +98,104 @@ if __name__ == '__main__':
     review_list = get_all_reviews(review_url)
     gazou = get_gazou(review_url)
 
-    model = pickle.load(open('amazon_review.pkl', 'rb'))
+    # model = pickle.load(open('amazon_review.pkl', 'rb'))
 
-    # 前処理
-    char_filters = [
-        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", "")]
-    # 後処理
-    token_filters = [
-        POSKeepFilter(['名詞', '動詞', '形容詞', '副詞']),
-        ExtractAttributeFilter("base_form")]
-    # Tokenizerの初期化
-    tokenizer = Tokenizer()
-    # 前処理・後処理が追加されたVectorizerに変更
-    analyzer = Analyzer(char_filters=char_filters, tokenizer=tokenizer, token_filters=token_filters)
-    feature_vectorizer = CountVectorizer(binary=True, analyzer=analyzer.analyze)
-    df = pandas.DataFrame(review_list)
-    x = df.get("text")
-    vectorized = feature_vectorizer.transform(x)
-    pre = model.predict(vectorized)
-    print(pre)
+    # # 前処理
+    # char_filters = [
+    #     RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", "")]
+    # # 後処理
+    # token_filters = [
+    #     POSKeepFilter(['名詞', '動詞', '形容詞', '副詞']),
+    #     ExtractAttributeFilter("base_form")]
+    # # Tokenizerの初期化
+    # tokenizer = Tokenizer()
+    # # 前処理・後処理が追加されたVectorizerに変更
+    # analyzer = Analyzer(char_filters=char_filters, tokenizer=tokenizer, token_filters=token_filters)
+    # feature_vectorizer = CountVectorizer(binary=True, analyzer=analyzer.analyze)
+    # df = pandas.DataFrame(review_list)
+    # x = df.get("text")
+    # vectorized = feature_vectorizer.transform(x)
+    # pre = model.predict(vectorized)
+    # print(pre)
+
+    class CorpusElement:
+        def __init__(self, text='', tokens=[], pn_scores=[]):
+            self.text2 = text2 # テキスト本文
+            self.tokens = tokens # 構文木解析されたトークンのリスト
+            self.pn_scores = pn_scores # 感情極性値(後述)
+    
+# CorpusElementのリスト
+naive_corpus = []
+
+naive_tokenizer = Tokenizer()
+
+for text2 in review_list:
+    tokens = naive_tokenizer.tokenize(text2)
+    element = CorpusElement(text2, tokens)
+    naive_corpus.append(element)
+
+
+
+
+
+# pn_ja.dicファイルから、単語をキー、極性値を値とする辞書を得る
+def load_pn_dict():
+    dic = {}
+    
+    with codecs.open(r'Z:\UserProfile\s20192087\Desktop\Tem\Graaaasses.VSCode\review_weightP.txt', 'r', 'UTF-8') as f:
+        lines = f.readlines()
+        i = 0
+        for line in lines:
+            # 各行は"良い:よい:形容詞:0.999995"
+             # 先頭2行は不要なメタ情報のため、削除
+            
+            columns = line.split(',')
+            
+            s = columns[1].replace(" \r\n","")
+            dic[columns[0]] = float(s)
+            i = i + 1
+            
+    return dic
+
+# トークンリストから極性値リストを得る
+def get_pn_scores(tokens, pn_dic):
+    scores = []
+    
+    for surface in [t.surface for t in tokens if t.part_of_speech.split(',')[0] in ['動詞','名詞', '形容詞', '副詞']]:
+        if surface in pn_dic:
+            scores.append(pn_dic[surface])
+        
+    return scores
+
+# 各文章の極性値リストを得る
+p = 0
+n = 0
+for element in naive_corpus:
+    element.pn_scores = get_pn_scores(element.tokens, pn_dic)
+    ans = sum(element.pn_scores)
+
+    if ans > 0:
+        p += 1
+    else:
+        n += 1
+
+p_per = p/len(review_list)
+n_per = n/len(review_list)
+
+print(p_per)
+print(n_per)
+
+# 最も高い5件を表示
+for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:5]:
+    print('Average: {:.3f}'.format(sum(element.pn_scores)))
+    print('Positib: {}'.format(io.StringIO(element.text2).readline()))
+# Error
+    
+print("-------------------------------------------------------------------------------------")
+  
+
+# 平均値が最も低い5件を表示
+for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:5]:
+    print('Average: {:.3f}'.format(sum(element.pn_scores)))
+    print('Negatib: {}'.format(io.StringIO(element.text2).readline()))
+    print("--" * 50)

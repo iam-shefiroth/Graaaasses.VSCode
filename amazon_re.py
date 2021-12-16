@@ -13,7 +13,7 @@ np.seterr(divide='ignore')
 
 
 # livedoorトピックニュースのファイル名一覧を取得する
-paths = r'z:\UserProfile\s20192004\Desktop\data\etc\reviewData4y.csv'
+paths = r'z:\UserProfile\s20192087\Desktop\etc\reviewData1.csv'
 texts = []
 text = []
 cnt = 0
@@ -40,7 +40,6 @@ class CorpusElement:
 naive_corpus = []
 
 naive_tokenizer = Tokenizer()
-
 for text2 in texts:
     tokens = naive_tokenizer.tokenize(text2)
     element = CorpusElement(text2, tokens)
@@ -54,7 +53,7 @@ for text2 in texts:
 def load_pn_dict():
     dic = {}
     
-    with codecs.open(r'C:\data2\amazon\review_weightP.txt', 'r', 'UTF-8') as f:
+    with codecs.open(r'Z:\UserProfile\s20192087\Desktop\Tem\Graaaasses.VSCode\review_weightP.txt', 'r', 'UTF-8') as f:
         lines = f.readlines()
         i = 0
         for line in lines:
@@ -72,7 +71,6 @@ def load_pn_dict():
 # トークンリストから極性値リストを得る
 def get_pn_scores(tokens, pn_dic):
     scores = []
-    
     for surface in [t.surface for t in tokens if t.part_of_speech.split(',')[0] in ['動詞','名詞', '形容詞', '副詞']]:
         if surface in pn_dic:
             scores.append(pn_dic[surface])
