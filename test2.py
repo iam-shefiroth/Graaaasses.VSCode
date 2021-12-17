@@ -123,6 +123,18 @@ if __name__ == '__main__':
         print("--Negativeの判定に効いた素性")
         print(se[-50:])
         print("--" * 50)
+        with open(r'z:\UserProfile\s20192087\Desktop\etc\review_weight.csv','w', encoding='CP932', errors='ignore') as f:
+            writer = csv.writer(f, lineterminator='\n')
+            # 全データを表示
+            for k,v in se.items():
+                csvlist=[]
+                #データ作成
+                csvlist.append(k)
+                csvlist.append(v)
+                writer.writerow(csvlist)
+            # ファイルクローズ
+            f.close()
+
         return y_pred
     
     # 前処理

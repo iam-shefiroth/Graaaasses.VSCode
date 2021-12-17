@@ -124,14 +124,15 @@ if __name__ == '__main__':
         feature_to_weight = dict()
         for w, name in zip(classifier.coef_[0], feature_vectorizer.get_feature_names()):
             feature_to_weight[name] = w
+        print(feature_to_weight)
         se = Series(feature_to_weight)
         se.sort_values(ascending=False, inplace=True)
+        print(se)
         print("--Positiveの判定に効いた素性")
         print(se[:50])
         print("--Negativeの判定に効いた素性")
         print(se[-50:])
         print("--" * 50)
-        pickle.dump(classifier,open('amazon_review.pkl', 'wb'))
         return y_pred
     
     # 前処理
@@ -146,7 +147,6 @@ if __name__ == '__main__':
     # 前処理・後処理が追加されたVectorizerに変更
     analyzer = Analyzer(char_filters=char_filters, tokenizer=tokenizer, token_filters=token_filters)
     feature_vectorizer = CountVectorizer(binary=True, analyzer=analyzer.analyze)
-    pickle.dump(feature_vectorizer,open('count_vec.pkl', 'wb'))
     # 再評価
     result = validate()
     #　検証用のDataFrameを作成
