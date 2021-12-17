@@ -4,6 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import textwrap
+import resultData
+from sorce.resultData import ResultData
 
 #windows(chromedriver.exeのパスを設定)※要変更
 chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
@@ -73,7 +75,7 @@ def get_product_overview(url):
     category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
     category = category.text.replace("\n", "").replace("\u3000", "").strip()
     
-    overview_list.append(url)
+    # 取得した商品のそれぞれの情報の挿入
     overview_list.append(title)
     overview_list.append(image)
     overview_list.append(category)
@@ -83,6 +85,7 @@ def get_product_overview(url):
 
 # 全ページ分をリストにする
 def get_all_reviews(url):
+    
     review_list = []                        #　初期化
     i = 1                                   #　ループ番号の初期化
     while True:

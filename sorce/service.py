@@ -1,3 +1,4 @@
+from typing import Text
 from flask import *
 import cv2
 import matplotlib.pyplot as plt
@@ -5,6 +6,7 @@ import time
 
 import resultData
 import amazon_selection
+import amazonAIt
 
 #テスト用データ※後に消せ
 testname = "マリオカート"
@@ -21,6 +23,12 @@ testposi3 = "子供がよく遊んでます。"
 testnega1 = "ワルイージしかいないマリオカートだったので売りました。"
 testnega2 = "打開しないと勝てないしアイテム運ゲーで明暗を分けるクソゲーなので捨てました。"
 testnega3 = "Сука, Блядь, бля, блять, черепашки, недорезанные!!!!"
+testposititle1 = "神ゲー"
+testposititle2 = "いいね"
+testposititle3 = "妻も推してます"
+testnegatitle1 = "くそげー"
+testnegatitle2 = "何なんwえななんww"
+testnegatitle3 = "Сука"
 testposiper = 0.35
 testnegaper = 0.7
 
@@ -28,13 +36,18 @@ testnegaper = 0.7
 def resultTime(resultTimer):
     print("Amazon商品取得時間：{}".format(resultTimer[1] - resultTimer[0]))
     print("全レビュー取得時間：{}".format(resultTimer[2] - resultTimer[1]))
-    print("総合時間：{}".format(resultTimer[2] - resultTimer[0]))
+    print("Amazonレビュー分析時間：{}".format(resultTimer[3] - resultTimer[2]))
+    print("総合時間：{}".format(resultTimer[3] - resultTimer[0]))
     
 
 #入力されたURLから結果処理に必要な情報を取得する
 def reviewSelection(url):
+    
+    
+    # 処理速度を計る
     resultTimer = []
     resultTimer.append(time.perf_counter())
+    
     #商品の情報を取得する。
     overview = amazon_selection.get_product_overview(url)
     print(overview)
@@ -46,21 +59,15 @@ def reviewSelection(url):
     
     #レビューのスクレイピングを取得する
     all_review = amazon_selection.get_all_reviews(overview[4])
-    print(all_review)
-    resultTimer.append(time.perf_counter())
-    #レビューのポジネガ判定
+    # all_review = amazon_selection.get_all_reviews("all_review = amazon_selection.get_all_reviews")
     
-    #取得結果を配列に挿入する
-    selectionInfo = resultData.ResultData()
+    #レビューのポジネガ判定
+    resultReview = amazonAIt.analysisreview(all_review)
+    resultTimer.append(time.perf_counter())
+
     #処理結果を処理結果クラスに挿入する（試験用テストを使用中、消してね）
-    selectionInfo.overviewInsert(overview[0],overview[1],overview[2])
-    selectionInfo.positiveInsert(testposi1)
-    selectionInfo.positiveInsert(testposi2)
-    selectionInfo.positiveInsert(testposi3)
-    selectionInfo.negativeInsert(testnega1)
-    selectionInfo.negativeInsert(testnega2)
-    selectionInfo.negativeInsert(testnega3)
-    selectionInfo.reviewRatio(testposiper,testnegaper)
+    # 取得結果を配列に挿入する
+    selectionInfo = resultData.ResultData(url,overview[0],overview[1],)
     
     resultTime(resultTimer)
     return selectionInfo
