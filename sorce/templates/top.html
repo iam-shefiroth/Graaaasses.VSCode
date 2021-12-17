@@ -4,13 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
  
-<!--link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" /-->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
 <link rel="stylesheet" type="text/css" href="/static/style.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <title>検索トップ画面</title>
+    
 </head>
 <body>
-    <div class="inner">
+    
+    <div class="inner" id="searchTop">
         <h1 class="text-center">Amazonレビュー調査.com</h1>
         <div class="container">
             <form action="/search" method="POST" class="col align-self-center ">
@@ -25,11 +27,15 @@
                 </div>
             </form>
             <div style="text-align: center">
-        <!--{% if errorMessage != null %}-->
-            <label class="errorMessage text-center">{{errorMessage}}</label>
-        <!--{% endif %}-->
+            {% if errorMessage != null %}
+                <label class="errorMessage text-center">{{errorMessage}}</label>
+            {% endif %}
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!--
+    <script type="text/javascript" src="../js/main.js"></script>
+    -->
 </body>
 </html>

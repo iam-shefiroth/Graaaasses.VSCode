@@ -1,0 +1,40 @@
+.main-title{
+    width: 250px; 
+    margin-top: 3%; 
+    padding-top: 10px; 
+    padding-bottom: 10px;
+    border: solid;
+    border-color: grey;
+    border-width: 5px;
+    border-radius: 20px;
+}
+
+.close {
+    display: none;
+}
+
+.review-head-positive{
+    background-color: #66FF66;
+    border: none;
+    border-radius: 5px;
+    height: 50px;
+    margin-top: 20px;
+}
+.review-body-positive {
+    background-color: #CCFFCC;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+}
+
+.review-head-negative{
+    background-color: #FF6666;
+    border: none;
+    border-radius: 5px;
+    height: 50px;
+    margin-top: 20px;
+}
+.review-body-negative {
+    background-color: #FF9999;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+}

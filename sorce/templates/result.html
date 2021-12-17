@@ -1,3 +1,72 @@
-{{word}}
+<!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<a href="/">←戻る</a>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style2.css') }}" />
+    <link rel="stylesheet" type="text/css" href="/static/style2.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>調査結果</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    
+    </head>
+    <body>
+        <div style="text-align: center;">
+            <div class=" mx-auto main-title">
+                <h1>調査結果</h1>
+            </div>
+            <br>
+            <h5>{{result.name}}</h5>  
+            <div>
+                <a href={{result.url}}><img class="img-fluid" style="height: 200px" src={{result.img}}></a>
+            </div>
+        </div>
+        
+
+        <br>
+        <div class="container-fluid" style="padding-left: 7%; padding-right: 7%;">
+            <div class="row" style="margin-left: 10%; margin-right: 10%;">
+                <div class="col-8" style="margin-top: 10%; margin-bottom: 10%;">
+                    <h2>全体レビュー数：231件</h2>
+                    <h2>ポジティブレビュー数：122件</h2>
+                    <h2>ネガティブレビュー数：109件</h2>
+                </div>
+                <div class="col-4" style="border: 2px;">
+                    <canvas id="myChart" width="100px" height="100px"></canvas>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-6">
+                    <label style="text-align: center; font-size: 40px;">ポジティブ</label><br>
+                    <div style="text-align: left;" class="border-end">
+                        <button class="review-head-positive w-100" onclick="closeWindow('posi1')">1.   {{result.positive[0].title}}</button>
+                            <p id="posi1" class="review-body-positive close">{{result.positive[0].review}}</p>
+                        <button class="review-head-positive w-100"  onclick="closeWindow('posi2')">2.   {{result.positive[1].title}}</button>
+                            <p class="review-body-positive close" id="posi2">{{result.positive[1].review}}</p>
+                        <button class="review-head-positive w-100" onclick="closeWindow('posi3')">3.   {{result.positive[2].title}}</button>
+                            <p class="review-body-positive close" id="posi3">{{result.positive[2].review}}</p>
+                    </div>
+                </div>
+                <div class="col-6" style="text-align: left">
+                    <label style="text-align: center; font-size: 40px;">ネガティブ</label><br>
+                    <button class="review-head-negative w-100" onclick="closeWindow('nega1')">1.   {{result.negative[0].title}}</button>
+                        <p class="review-body-negative close" id="nega1">{{result.negative[0].review}}</p>
+                    <button class="review-head-negative w-100" onclick="closeWindow('nega2')">2.   {{result.negative[1].title}}</button>
+                        <p class="review-body-negative close" id="nega2">{{result.negative[1].review}}</p>
+                    <button class="review-head-negative w-100" onclick="closeWindow('nega3')">3.   {{result.negative[2].title}}</button>
+                        <p class="review-body-negative close" id="nega3">{{result.negative[2].review}}</p>
+                </div>
+            </div>
+            <br>
+            <button onclick="location.href='/'" class="btn btn-primary" style="text-align: left;">戻る</button>
+        </div>
+        <br>
+        <input type="hidden" value="{{result.posiReviewRatio}}" id="posiRatio">
+        <input type="hidden" value="{{result.negaReviewRatio}}" id="negaRatio">
+        <script type="text/javascript" src="../static/js/main.js"></script>
+        
+        <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </body>
+</html>
