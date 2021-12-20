@@ -1,3 +1,4 @@
+from os import error
 from re import A
 from typing import Text
 from flask import *
@@ -44,7 +45,7 @@ def resultTime(resultTimer):
 
 #入力されたURLから結果処理に必要な情報を取得する
 def reviewSelection(url):
-    
+    selectionInfo = []
     
     # 処理速度を計る
     resultTimer = []
@@ -54,9 +55,10 @@ def reviewSelection(url):
     overview = amazon_selection.get_product_overview(url)
     resultTimer.append(time.perf_counter())
     
-    # スクレイピングブロック又はURLに不備がないか確認されてないか確認
-    if(overview["o_title"] == None):
-        return None
+    # スクレイピング成功したかどうか確認
+    if(overview["o_title"] == "Not Scraping"):
+        selection = resultData.ResultData(err = overview["o_category"])
+        return selection
     
     #レビューのスクレイピングを取得する
     all_review = amazon_selection.get_all_reviews(overview["review"])

@@ -15,9 +15,13 @@ def search_result():
     url = request.form.get('searchUrl')
     
     if not(checkUrl(url)):
-        return render_template("top.html", errorMessage="だめ")
+        return render_template("top.html", errorMessage="AmazonのURLではないです。")
     
     result = service.reviewSelection(url)
+    
+    # 上手く情報を取得できたか確認
+    if(result.error != ''):
+        return render_template("top.html", errorMessage=result.error)
     # result = sampleResult()
     #print("{}".format(result.posiReviewRatio))
     return render_template("result.html", result = result)
