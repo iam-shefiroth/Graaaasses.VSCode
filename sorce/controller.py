@@ -2,6 +2,7 @@ from flask import *
 
 import reviewData
 import resultData
+import service
 
 app = Flask(__name__)
 
@@ -16,7 +17,8 @@ def search_result():
     if not(checkUrl(url)):
         return render_template("top.html", errorMessage="だめ")
     
-    result = sampleResult()
+    result = service.reviewSelection(url)
+    # result = sampleResult()
     #print("{}".format(result.posiReviewRatio))
     return render_template("result.html", result = result)
 

@@ -62,8 +62,7 @@ def load_pn_dict():
     return dic
 
 def analysisreview(amazonreview):
-    ga = []
-    
+    choise = {}
     # CorpusElementのリスト
     naive_corpus = []
 
@@ -90,28 +89,36 @@ def analysisreview(amazonreview):
         else:
             n += 1
 
+    choise["posicnt"] = p
+    choise["negacnt"] = n
+
     p_per = p/len(amazonreview)
     n_per = n/len(amazonreview)
+    
 
-    print("ポジ%",p_per)
-    print("ネガ%",n_per)
+    choise["totalposiper"] = p_per
+    choise["totalnegaper"] = n_per
 
-    print("ベスト3")
+    bestlist = []
+    worstlist = []
+    
     # 最も高い3件を表示
     for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:3]:
-        print('title: {}'.format(io.StringIO(element.title).readline()))
-        print('ポジティブ度: {:.3f}'.format(sum(element.pn_scores)))
-        print('Posi: {}'.format(io.StringIO(element.text2).readline()))
-        print("--" * 50)
+        best = {"title":io.StringIO(element.title).readline(),
+                "posiper":sum(element.pn_scores),
+                "text":io.StringIO(element.text2).readline()}
+        bestlist.append(best)
     # Error
+    choise["positive"] = bestlist
     
-    print("ワースト3")
+
     # 平均値が最も低い3件を表示
     for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:3]:
-        print('title: {}'.format(io.StringIO(element.title).readline()))
-        print('ネガティブ度: {:.3f}'.format(sum(element.pn_scores)))
-        print('Nega: {}'.format(io.StringIO(element.text2).readline()))
-        print("--" * 50)
+        worst = {"title":io.StringIO(element.title).readline(),
+                "posiper":sum(element.pn_scores),
+                "text":io.StringIO(element.text2).readline()}
+        worstlist.append(worst)
     
+    choise["negative"] = worstlist
     
-    return ga
+    return choise

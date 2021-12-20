@@ -16,18 +16,26 @@ class ResultData():
     posicount:int               #ポジティブレビュー数
     negacount:int               #ネガティブレビュー数
     
-    def __init__(self,insert_url,insert_name,insert_img,totalcnt = 0,posicnt = 0,negacnt = 0,positive=[],negative=[],posititle=[],negatitle=[]):
+    # Amazon商品の概要情報を挿入する
+    def __init__(self,insert_url,insert_name,insert_img,totalcnt = 0,posicnt = 0,negacnt = 0):
         self.url = insert_url
         self.name = insert_name
         self.img = insert_img
         self.totalcount = totalcnt
         self.posicount = posicnt
         self.negacount = negacnt
-        self.positive = positive
-        self.negatitle = negative
-        self.posititle = posititle
-        self.negatitle = negatitle
-        
+    
+    # ポジティブレビューを挿入する
+    def insertpositive(self,title,text):
+        self.posititle.append(title)
+        self.positive.append(text)
+    
+    # ネガティブレビューを鼠入する
+    def insertnegative(self,title,text):
+        self.negatitle.append(title)
+        self.negative.append(text)
+    
+    # ポジネガ判定の比率を計算し挿入する
     def reviewRatio(self, posi, nega):
         sums = posi + nega
         self.posiReviewRatio = round((posi / sums) * 100, 1)

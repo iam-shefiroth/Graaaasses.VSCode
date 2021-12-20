@@ -5,7 +5,6 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import textwrap
 import resultData
-from sorce.resultData import ResultData
 
 #windows(chromedriver.exeのパスを設定)※要変更
 chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
@@ -54,7 +53,6 @@ def get_asin_from_amazon_2(url):
 
 #商品の情報をリストにする
 def get_product_overview(url):
-    overview_list = []
     print("now_reading_page")
     text = get_amazon_page_info(url)
     # print(text)
@@ -76,10 +74,8 @@ def get_product_overview(url):
     category = category.text.replace("\n", "").replace("\u3000", "").strip()
     
     # 取得した商品のそれぞれの情報の挿入
-    overview_list.append(title)
-    overview_list.append(image)
-    overview_list.append(category)
-    overview_list.append(all_review_page)
+    overview_list = {"o_title":title,"o_image":image,"o_category":category
+                    ,"review":all_review_page}
     
     return overview_list
 
