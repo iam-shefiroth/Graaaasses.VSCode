@@ -7,9 +7,11 @@ from sklearn.preprocessing import LabelEncoder
 from pandas import Series
 from janome.analyzer import Analyzer
 from janome.charfilter import RegexReplaceCharFilter
-from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter
+from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter,LowerCaseFilter,CompoundNounFilter
 import pandas
 import csv
+import re
+import neologdn
 #windows(chromedriver.exeのパスを設定)
 chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
 
@@ -27,50 +29,72 @@ if __name__ == '__main__':
         for row in f:
             if row[0] == "5つ星のうち5.0":
                 row[0] = "ポジ"
+                normalized_text = neologdn.normalize(row[1])
+                tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', text_replaced_number)
+                text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
-                "text": row[1],
+                "text": text_removed_symbol,
                 }
-                # if a < 600:
+                # if a < 530:
                 a += 1
                 review_list.append(article) 
             elif row[0] == "5つ星のうち4.0":
                 row[0] = "ポジ"
+                normalized_text = neologdn.normalize(row[1])
+                tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', text_replaced_number)
+                text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
-                "text": row[1],
+                "text": text_removed_symbol,
                 }
-                # if a < 600:
+                # if a < 540:
                 a += 1
                 review_list.append(article) 
             elif row[0] == "5つ星のうち2.0":
                 row[0] = "ネガ"
+                normalized_text = neologdn.normalize(row[1])
+                tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', text_replaced_number)
+                text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
-                "text": row[1],
+                "text": text_removed_symbol,
                 }
                 b += 1
                 review_list.append(article)
             elif row[0] == "5つ星のうち1.0":
                 row[0] = "ネガ"
+                normalized_text = neologdn.normalize(row[1])
+                tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', text_replaced_number)
+                text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
-                "text": row[1],
+                "text": text_removed_symbol,
                 }
                 b += 1
                 review_list.append(article)
 
         csv_file.close()
     
-    df = pandas.DataFrame(review_list)
-    filtered_by_label = df.query("label == 'ポジ' | label == 'ネガ'")
+    dataset = pandas.DataFrame(review_list)
+    filtered_by_label = dataset.query("label == 'ポジ' | label == 'ネガ'")
     group_by_label = filtered_by_label.groupby("label")
     labels_size = group_by_label.size()
     print(labels_size)
     
+    
+    label_vectorizer = LabelEncoder()
+    #数合わせ
     n = labels_size.min()
     dataset = group_by_label.apply(lambda x: x.sample(n, random_state=0))
-    label_vectorizer = LabelEncoder()
     transformed_label = label_vectorizer.fit_transform(dataset.get("label"))
     dataset["label"] = transformed_label
     # 入力と出力に分割
@@ -139,10 +163,13 @@ if __name__ == '__main__':
     
     # 前処理
     char_filters = [
-        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", "")]
+        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
+        RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', '')]
     # 後処理
     token_filters = [
         POSKeepFilter(['名詞', '動詞', '形容詞', '副詞']),
+        LowerCaseFilter(),
+        # CompoundNounFilter(),
         ExtractAttributeFilter("base_form")]
     # Tokenizerの再初期化
     tokenizer = Tokenizer()

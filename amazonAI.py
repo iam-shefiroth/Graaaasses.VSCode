@@ -12,7 +12,7 @@ from janome.charfilter import RegexReplaceCharFilter
 from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter
 import pandas
 from janome.tokenizer import Tokenizer
-from os import P_DETACH, error
+from os import P_DETACH, error, startfile
 import codecs
 import numpy as np
 import io
@@ -120,6 +120,8 @@ if __name__ == '__main__':
     class CorpusElement:
         def __init__(self, text='', tokens=[], pn_scores=[]):
             self.text2 = text2 # テキスト本文
+            # self.star = star # 星
+            # self.title = title # タイトル
             self.tokens = tokens # 構文木解析されたトークンのリスト
             self.pn_scores = pn_scores # 感情極性値(後述)
     
@@ -157,6 +159,7 @@ def get_pn_scores(tokens, pn_dic):
     scores = []
     
     for surface in [t.surface for t in tokens if t.part_of_speech.split(',')[0] in ['動詞','名詞', '形容詞', '副詞']]:
+        # print(surface)
         if surface in pn_dic:
             scores.append(pn_dic[surface])
         
