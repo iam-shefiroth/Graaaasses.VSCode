@@ -4,12 +4,15 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import textwrap
+import resultData
 
 #windows(chromedriver.exeのパスを設定)※要変更
 chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
 
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
+
+
  
 #　amazonのレビュー情報をseleniumで取得する_引数：amazonの商品URL
 def get_amazon_page_info(url):
@@ -52,7 +55,6 @@ def get_asin_from_amazon_2(url):
 
 #商品の情報をリストにする
 def get_product_overview(url):
-    overview_list = []
     print("now_reading_page")
     text = get_amazon_page_info(url)
     # print(text)
@@ -62,6 +64,11 @@ def get_product_overview(url):
     
     # ↓商品名
     title = amazon_bs.select_one('.product-title-word-break')
+        
+    # Amazon商品概要サイトではないURLかどうか確認する
+    if(title == None):
+        overview_list = {"o_title":"Not Scraping","o_category":"Amazon商品概要サイトのURLを入れてください"}
+        return overview_list
     title = title.text.replace("\n", "").replace("\u3000", "").strip()
     # 商品の画像
     image = amazon_bs.select('#main-image-container > ul > li.image.item.itemNo0.maintain-height.selected > span > span > div > img')
@@ -73,16 +80,17 @@ def get_product_overview(url):
     category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
     category = category.text.replace("\n", "").replace("\u3000", "").strip()
     
-    overview_list.append(url)
-    overview_list.append(title)
-    overview_list.append(image)
-    overview_list.append(category)
-    overview_list.append(all_review_page)
+    if(title == None or image == None or all_review_page == None or category == None):
+        overview_list = {"o_title":"Not Scraping","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください"}
+    else:
+        # 取得した商品のそれぞれの情報の挿入
+        overview_list = {"o_title":title,"o_image":image,"o_category":category,"review":all_review_page}
     
     return overview_list
 
 # 全ページ分をリストにする
 def get_all_reviews(url):
+    
     review_list = []                        #　初期化
     i = 1                                   #　ループ番号の初期化
     while True:
