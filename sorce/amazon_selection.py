@@ -29,7 +29,9 @@ def get_amazon_page_info(url):
     driver.quit()                           #　chromeブラウザを閉じる
     
     return text                             #　取得したページ情報を返す
-    # ASIN取得2
+
+
+# ASIN取得2
 def get_asin_from_amazon_2(url):
      
     asin = ""
@@ -62,31 +64,73 @@ def get_product_overview(url):
     
     #amazonの商品情報を取得
     
+    
+    # スクレイピングブロックされてないか確認
+    title = "test"
+    
+    if(title == None):
+        overview_list = {"o_title":"Not Scraping","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください"}
+    
+    
     # ↓商品名
     title = amazon_bs.select_one('.product-title-word-break')
         
     # Amazon商品概要サイトではないURLかどうか確認する
     if(title == None):
-        overview_list = {"o_title":"Not Scraping","o_category":"Amazon商品概要サイトのURLを入れてください"}
+        overview_list = {"o_title":"Not Scraping","o_category":"Amazon商品概要サイトのURLでないか、URL内容に誤りがあります。"}
         return overview_list
     title = title.text.replace("\n", "").replace("\u3000", "").strip()
+    
     # 商品の画像
     image = amazon_bs.select('#main-image-container > ul > li.image.item.itemNo0.maintain-height.selected > span > span > div > img')
     image = image[0].attrs['src']
-    # 商品の全レビューURL
-    all_review_page = amazon_bs.select_one('#reviews-medley-footer > div.a-row.a-spacing-medium a')
-    all_review_page ='https://www.amazon.co.jp/'  + all_review_page.attrs['href']
+    
     # 商品のカテゴリー
     category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
     category = category.text.replace("\n", "").replace("\u3000", "").strip()
     
-    if(title == None or image == None or all_review_page == None or category == None):
-        overview_list = {"o_title":"Not Scraping","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください"}
+    # ここまでの取得情報を配列に挿入
+    overview_list = {"o_title":title,"o_image":image,"o_category":category}
+    
+    # 商品の全レビューURL
+    all_review_page = amazon_bs.select_one('#reviews-medley-footer > div.a-row.a-spacing-medium a')
+    
+    # AmazonレビューページURLが存在するかどうか確認
+    if(all_review_page == None):
+        overview_list["review"] = None
     else:
-        # 取得した商品のそれぞれの情報の挿入
-        overview_list = {"o_title":title,"o_image":image,"o_category":category,"review":all_review_page}
+        all_review_page ='https://www.amazon.co.jp/'  + all_review_page.attrs['href']
+        
+        # Amazonレビューページを追加
+        overview_list["review"] = all_review_page
     
     return overview_list
+
+# 概要ページにある全レビューをリストにする
+def get_overview_reviews(url):
+    review_list = []
+    print('1page_search')              #　処理状況を表示
+    url = url.replace('dp', 'product-reviews')
+    text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
+    amazon_bs = bs4.BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
+    review_title = amazon_bs.select('a.review-title')
+    reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
+    stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
+    
+    
+    
+    if(review_title == None):
+        return ""
+    
+    for j in range(len(stars)):
+        article = {
+        "title":review_title[j].text.replace("\n", "").replace("\u3000", ""),
+        "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
+        "label": stars[j].text,
+        }
+        review_list.append(article)
+    
+    return review_list
 
 # 全ページ分をリストにする
 def get_all_reviews(url):
@@ -96,6 +140,7 @@ def get_all_reviews(url):
     while True:
         print(i,'page_search')              #　処理状況を表示
         i += 1                              #　ループ番号を更新
+        url = url.replace('dp', 'product-reviews')
         text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
         amazon_bs = bs4.BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
         review_title = amazon_bs.select('a.review-title')
