@@ -12,7 +12,8 @@ chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
 
-
+# スクレイピングブロック判定
+blockJudge = "申し訳ありませんが、お客様がロボットでないことを確認させていただく必要があります。最良のかたちでアクセスしていただくために、お使いのブラウザがクッキーを受け入れていることをご確認ください。"
  
 #　amazonのレビュー情報をseleniumで取得する_引数：amazonの商品URL
 def get_amazon_page_info(url):
@@ -59,17 +60,22 @@ def get_asin_from_amazon_2(url):
 def get_product_overview(url):
     print("now_reading_page")
     text = get_amazon_page_info(url)
-    # print(text)
+    print(text)
     amazon_bs = bs4.BeautifulSoup(text,features='lxml')
     
     #amazonの商品情報を取得
     
     
     # スクレイピングブロックされてないか確認
-    title = "test"
+    title = amazon_bs.select_one('.a-last')
+    if(title != None):
+        title = title.text.replace("\n", "").replace("\u3000", "").strip()
+        if(title == blockJudge):
+            overview_list = {"o_title":"Not Scraping","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください。"}
+            return overview_list
     
-    if(title == None):
-        overview_list = {"o_title":"Not Scraping","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください"}
+    
+    
     
     
     # ↓商品名
@@ -113,6 +119,18 @@ def get_overview_reviews(url):
     url = url.replace('dp', 'product-reviews')
     text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
     amazon_bs = bs4.BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
+    
+    # スクレイピングブロックされてないか確認
+    title = amazon_bs.select_one('.a-last')
+    if(title != None):
+        title = title.text.replace("\n", "").replace("\u3000", "").strip()
+        if(title == blockJudge):
+            review_list = []
+            article = {"title":"Not Scraping","text":"スクレイピングブロックされています、時間が経ってから再度ご利用ください。"}
+            review_list.append(article)
+            return review_list
+    
+    
     review_title = amazon_bs.select('a.review-title')
     reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
     stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
@@ -143,6 +161,17 @@ def get_all_reviews(url):
         url = url.replace('dp', 'product-reviews')
         text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
         amazon_bs = bs4.BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
+        
+        # スクレイピングブロックされてないか確認
+        title = amazon_bs.select_one('.a-last')
+        if(title != None):
+            title = title.text.replace("\n", "").replace("\u3000", "").strip()
+            if(title == blockJudge):
+                review_list = []
+                article = {"title":"Not Scraping","text":"スクレイピングブロックされています、時間が経ってから再度ご利用ください。"}
+                review_list.append(article)
+                return review_list
+        
         review_title = amazon_bs.select('a.review-title')
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
         stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')

@@ -60,9 +60,6 @@ def reviewSelection(url):
         selection = resultData.ResultData(err = overview["o_category"])
         return selection
     
-
-    
-
     
     if(overview["review"] != None):
         #レビューのスクレイピングを取得する
@@ -73,9 +70,16 @@ def reviewSelection(url):
         all_review = amazon_selection.get_overview_reviews(url)
         
     resultTimer.append(time.perf_counter())
-    print(all_review)
+    
+    # レビュー数が0件かどうか確認する
     if(all_review == []):
         selection = resultData.ResultData(err = "この商品のレビュー数は0件です")
+        return selection
+    
+    # 全レビュー取得中にロボット確認ページへ飛ばされてないか確認
+    one_review = all_review[0]
+    if(one_review["title"] == "Not Scraping"):
+        selection = resultData.ResultData(err = one_review["text"])
         return selection
     
     
