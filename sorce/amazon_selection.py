@@ -23,6 +23,8 @@ def get_amazon_page_info(url):
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
     driver = webdriver.Chrome(executable_path=chrome_path,options=options)
+    # スクレイピングブロック対策として、関係ないサイト且つ容量が少ないサイトを開く
+    driver.get("https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=201909000")
     driver.get(url)                         #　chromeブラウザでurlを開く
     driver.implicitly_wait(10)              #　指定したドライバの要素が見つかるまでの待ち時間を設定
     text = driver.page_source               #　ページ情報を取得
@@ -60,24 +62,20 @@ def get_asin_from_amazon_2(url):
 def get_product_overview(url):
     print("now_reading_page")
     text = get_amazon_page_info(url)
-    # print(text)
     amazon_bs = bs4.BeautifulSoup(text,features='lxml')
     
     #amazonの商品情報を取得
-    
-    
-    # スクレイピングブロックされてないか確認
     title = amazon_bs.select_one('.a-last')
+    print(title)
     if(title != None):
         title = title.text.replace("\n", "").replace("\u3000", "").strip()
         if(title == blockJudge):
             overview_list = {"o_title":"!Not Scraping!","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください"}
             return overview_list
     
-    
     # ↓商品名
     title = amazon_bs.select_one('.product-title-word-break')
-        
+    
     # Amazon商品概要サイトではないURLかどうか確認する
     if(title == None):
         overview_list = {"o_title":"!Not Scraping!","o_category":"Amazon商品概要サイトのURLでないか、URL内容に誤りがあります"}
