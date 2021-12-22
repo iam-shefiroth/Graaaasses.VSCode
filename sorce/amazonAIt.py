@@ -62,63 +62,67 @@ def load_pn_dict():
     return dic
 
 def analysisreview(amazonreview):
-    choise = {}
-    # CorpusElementのリスト
-    naive_corpus = []
+    try:
+        choise = {}
+        # CorpusElementのリスト
+        naive_corpus = []
 
-    naive_tokenizer = Tokenizer()
+        naive_tokenizer = Tokenizer()
 
-    # 一つのレビュー本文とトークンをリストに入れる
-    for text2 in amazonreview:
-        tokens = naive_tokenizer.tokenize(text2["text"])
-        element = CorpusElement(text2["text"], tokens,title = text2["title"])
-        naive_corpus.append(element)
+        # 一つのレビュー本文とトークンをリストに入れる
+        for text2 in amazonreview:
+            tokens = naive_tokenizer.tokenize(text2["text"])
+            element = CorpusElement(text2["text"], tokens,title = text2["title"])
+            naive_corpus.append(element)
 
-    # 感情極性対応表のロード
-    pn_dic = load_pn_dict()
+        # 感情極性対応表のロード
+        pn_dic = load_pn_dict()
 
-    # 各文章の極性値リストを得る
-    p = 0
-    n = 0
-    for element in naive_corpus:
-        element.pn_scores = get_pn_scores(element.tokens, pn_dic)
-        ans = sum(element.pn_scores)
+        # 各文章の極性値リストを得る
+        p = 0
+        n = 0
+        for element in naive_corpus:
+            element.pn_scores = get_pn_scores(element.tokens, pn_dic)
+            ans = sum(element.pn_scores)
 
-        if ans > 0:
-            p += 1
-        else:
-            n += 1
+            if ans > 0:
+                p += 1
+            else:
+                n += 1
 
-    choise["posicnt"] = p
-    choise["negacnt"] = n
+        choise["posicnt"] = p
+        choise["negacnt"] = n
 
-    p_per = p/len(amazonreview)
-    n_per = n/len(amazonreview)
+        p_per = p/len(amazonreview)
+        n_per = n/len(amazonreview)
+
+        choise["totalposiper"] = p_per
+        choise["totalnegaper"] = n_per
+
+        bestlist = []
+        worstlist = []
+    
+        # 最も高い3件を表示
+        for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:3]:
+            best = {"title":io.StringIO(element.title).readline(),
+                    "posiper":sum(element.pn_scores),
+                    "text":io.StringIO(element.text2).readline()}
+            bestlist.append(best)
+        # Error
+        choise["positive"] = bestlist
     
 
-    choise["totalposiper"] = p_per
-    choise["totalnegaper"] = n_per
-
-    bestlist = []
-    worstlist = []
+        # 平均値が最も低い3件を表示
+        for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:3]:
+            worst = {"title":io.StringIO(element.title).readline(),
+                    "posiper":sum(element.pn_scores),
+                    "text":io.StringIO(element.text2).readline()}
+            worstlist.append(worst)
     
-    # 最も高い3件を表示
-    for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:3]:
-        best = {"title":io.StringIO(element.title).readline(),
-                "posiper":sum(element.pn_scores),
-                "text":io.StringIO(element.text2).readline()}
-        bestlist.append(best)
-    # Error
-    choise["positive"] = bestlist
+        choise["negative"] = worstlist
     
-
-    # 平均値が最も低い3件を表示
-    for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:3]:
-        worst = {"title":io.StringIO(element.title).readline(),
-                "posiper":sum(element.pn_scores),
-                "text":io.StringIO(element.text2).readline()}
-        worstlist.append(worst)
-    
-    choise["negative"] = worstlist
-    
+    except:
+        choise = {}
+        choise = None
+        
     return choise

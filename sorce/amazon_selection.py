@@ -60,7 +60,7 @@ def get_asin_from_amazon_2(url):
 def get_product_overview(url):
     print("now_reading_page")
     text = get_amazon_page_info(url)
-    print(text)
+    # print(text)
     amazon_bs = bs4.BeautifulSoup(text,features='lxml')
     
     #amazonの商品情報を取得
@@ -71,11 +71,8 @@ def get_product_overview(url):
     if(title != None):
         title = title.text.replace("\n", "").replace("\u3000", "").strip()
         if(title == blockJudge):
-            overview_list = {"o_title":"Not Scraping","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください。"}
+            overview_list = {"o_title":"!Not Scraping!","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください"}
             return overview_list
-    
-    
-    
     
     
     # ↓商品名
@@ -83,7 +80,7 @@ def get_product_overview(url):
         
     # Amazon商品概要サイトではないURLかどうか確認する
     if(title == None):
-        overview_list = {"o_title":"Not Scraping","o_category":"Amazon商品概要サイトのURLでないか、URL内容に誤りがあります。"}
+        overview_list = {"o_title":"!Not Scraping!","o_category":"Amazon商品概要サイトのURLでないか、URL内容に誤りがあります"}
         return overview_list
     title = title.text.replace("\n", "").replace("\u3000", "").strip()
     
@@ -94,61 +91,22 @@ def get_product_overview(url):
     # 商品のカテゴリー
     category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
     category = category.text.replace("\n", "").replace("\u3000", "").strip()
-    
-    # ここまでの取得情報を配列に挿入
-    overview_list = {"o_title":title,"o_image":image,"o_category":category}
-    
+
     # 商品の全レビューURL
     all_review_page = amazon_bs.select_one('#reviews-medley-footer > div.a-row.a-spacing-medium a')
     
     # AmazonレビューページURLが存在するかどうか確認
     if(all_review_page == None):
-        overview_list["review"] = None
+        overview_list = {"o_title":"!Not Scraping!","o_category":"この商品のレビュー数は0件です"}
     else:
         all_review_page ='https://www.amazon.co.jp/'  + all_review_page.attrs['href']
         
-        # Amazonレビューページを追加
-        overview_list["review"] = all_review_page
+        # Amazon商品の取得情報を配列に挿入
+        overview_list = {"o_title":title,"o_image":image,"o_category":category,"review":all_review_page}
+    
+    
     
     return overview_list
-
-# 概要ページにある全レビューをリストにする
-def get_overview_reviews(url):
-    review_list = []
-    print('1page_search')              #　処理状況を表示
-    url = url.replace('dp', 'product-reviews')
-    text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
-    amazon_bs = bs4.BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
-    
-    # スクレイピングブロックされてないか確認
-    title = amazon_bs.select_one('.a-last')
-    if(title != None):
-        title = title.text.replace("\n", "").replace("\u3000", "").strip()
-        if(title == blockJudge):
-            review_list = []
-            article = {"title":"Not Scraping","text":"スクレイピングブロックされています、時間が経ってから再度ご利用ください。"}
-            review_list.append(article)
-            return review_list
-    
-    
-    review_title = amazon_bs.select('a.review-title')
-    reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
-    stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
-    
-    
-    
-    if(review_title == None):
-        return ""
-    
-    for j in range(len(stars)):
-        article = {
-        "title":review_title[j].text.replace("\n", "").replace("\u3000", ""),
-        "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
-        "label": stars[j].text,
-        }
-        review_list.append(article)
-    
-    return review_list
 
 # 全ページ分をリストにする
 def get_all_reviews(url):
@@ -168,7 +126,7 @@ def get_all_reviews(url):
             title = title.text.replace("\n", "").replace("\u3000", "").strip()
             if(title == blockJudge):
                 review_list = []
-                article = {"title":"Not Scraping","text":"スクレイピングブロックされています、時間が経ってから再度ご利用ください。"}
+                article = {"title":"!Not Scraping!","text":"スクレイピングブロックされています、時間が経ってから再度ご利用ください。"}
                 review_list.append(article)
                 return review_list
         

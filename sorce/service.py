@@ -15,6 +15,7 @@ import amazonAIt
 # ロボット扱いにされてない場合、使う
 testurl = "https://www.amazon.co.jp/%E3%83%90%E3%83%B3%E3%83%80%E3%82%A4%E3%83%8A%E3%83%A0%E3%82%B3%E3%82%A8%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%86%E3%82%A4%E3%83%B3%E3%83%A1%E3%83%B3%E3%83%88-%E3%80%90PS4%E3%80%91%E3%82%A2%E3%82%A4%E3%83%89%E3%83%AB%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC-%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%AA%E3%83%83%E3%83%88%E3%82%B7%E3%83%BC%E3%82%BA%E3%83%B3%E3%80%90%E6%97%A9%E6%9C%9F%E8%B3%BC%E5%85%A5%E7%89%B9%E5%85%B8%E3%80%91%E8%A1%A3%E8%A3%85DLC%E3%80%8E%E6%9A%81%E3%81%AE%E3%82%86%E3%81%8B%E3%81%9F%E3%80%8F%E3%81%8C%E5%85%A5%E6%89%8B%E3%81%A7%E3%81%8D%E3%82%8B%E3%83%97%E3%83%AD%E3%83%80%E3%82%AF%E3%83%88%E3%82%B3%E3%83%BC%E3%83%89-%E5%B0%81%E5%85%A5/dp/B08W5S54P1/ref=sr_1_7?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&keywords=%E3%82%A2%E3%82%A4%E3%83%89%E3%83%AB%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC&qid=1639620405&sr=8-7"
 # testurl = "https://www.amazon.co.jp/%E3%83%9E%E3%83%AA%E3%82%AA-%E3%82%BD%E3%83%8B%E3%83%83%E3%82%AF-%E6%9D%B1%E4%BA%AC2020%E3%82%AA%E3%83%AA%E3%83%B3%E3%83%94%E3%83%83%E3%82%AF-%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%97%E3%83%A9%E3%82%A4%E3%82%B9-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B09MZ6YQG5/ref=sr_1_6?crid=64D3261VWMSR&keywords=%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%A2%E3%83%B3%E3%83%89%E3%82%BD%E3%83%8B%E3%83%83%E3%82%AF&qid=1640050427&s=videogames&sprefix=%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%A2%E3%83%B3%E3%83%89%2Cvideogames%2C399&sr=1-6"
+
 # 商品のジャンル次第で分析するファイルを選ぶ
 def analysischoise(category,allreview):
     resultReview = ""
@@ -56,35 +57,30 @@ def reviewSelection(url):
     resultTimer.append(time.perf_counter())
     
     # スクレイピング成功したかどうか確認
-    if(overview["o_title"] == "Not Scraping"):
+    if(overview["o_title"] == "!Not Scraping!"):
         selection = resultData.ResultData(err = overview["o_category"])
         return selection
     
+    #レビューのスクレイピングを取得する
+    all_review = amazon_selection.get_all_reviews(overview["review"])
+    # all_review = amazon_selection.get_all_reviews("all_review = amazon_selection.get_all_reviews")
     
-    if(overview["review"] != None):
-        #レビューのスクレイピングを取得する
-        all_review = amazon_selection.get_all_reviews(overview["review"])
-        # all_review = amazon_selection.get_all_reviews("all_review = amazon_selection.get_all_reviews")
-    else:
-        # Amazon商品概要サイトからレビューを取得する
-        all_review = amazon_selection.get_overview_reviews(url)
-        
     resultTimer.append(time.perf_counter())
-    
-    # レビュー数が0件かどうか確認する
-    if(all_review == []):
-        selection = resultData.ResultData(err = "この商品のレビュー数は0件です")
-        return selection
     
     # 全レビュー取得中にロボット確認ページへ飛ばされてないか確認
     one_review = all_review[0]
-    if(one_review["title"] == "Not Scraping"):
+    if(one_review["title"] == "!Not Scraping!"):
         selection = resultData.ResultData(err = one_review["text"])
         return selection
     
     
     # 総レビュー数
     totalreview = len(all_review)
+    
+    # レビュー数が少ないかどうか確認
+    if(totalreview < 10):
+        selection = resultData.ResultData(err = "レビュー数が少ないため分析出来ません")
+        return selection
     
     # サクラレビューチェック
     
@@ -97,7 +93,7 @@ def reviewSelection(url):
         selection = resultData.ResultData(err = "この商品のジャンルは現在対応しておりません")
         return selection
 
-    #処理結果を処理結果クラスに挿入する
+    # 処理結果を処理結果クラスに挿入する
     # 商品概要の取得結果をデータクラスに挿入する
     selectionInfo = resultData.ResultData(url,overview["o_title"],overview["o_image"],totalreview,resultReview["posicnt"],
                                         resultReview["negacnt"])
