@@ -26,15 +26,15 @@
     font-size: 50px;
 }
 
-.select-design{
-    border-top-left-radius: 30px; 
-    border-bottom-left-radius: 30px; 
-    width: 60px; 
-    background-color: white; 
+.ddd{
+    border-bottom-left-radius: 30px!important; 
+    border-top-left-radius: 30px!important; 
+    padding-left: 30px!important;
     border: none;
 }
+
 .button-design{
-    border-top-right-radius: 30px; 
+    border-top-right-radius: 30px;
     border-bottom-right-radius: 30px; 
     width: 60px; 
     background-color: white; 

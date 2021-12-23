@@ -17,11 +17,7 @@
         <div class="container">
             <form action="/search" method="POST" class="col align-self-center ">
                 <div class="input-group"> 
-                    <select name="genre" class="input-group-prepend select-design shadow-me" style="width: 150px">
-                        <option value="" >ジャンルを選択</option>
-                        <option value="ゲームソフト">ゲームソフト</option>
-                    </select>
-                    <input type="text" name="searchUrl" class="form-control shadow-me" style="border: none;">
+                    <input type="text" name="searchUrl" class="form-control shadow-me ddd">
                     <div class="input-group-append"><button type="submit" class="button-design shadow-me" 
                     >調査</button></div>
                 </div>
@@ -34,8 +30,8 @@
         </div>
     </div>
     <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <!--
+    
     <script type="text/javascript" src="../js/main.js"></script>
-    -->
+    
 </body>
 </html>
