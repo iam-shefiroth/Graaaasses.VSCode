@@ -66,7 +66,7 @@ def get_product_overview(url):
     
     #amazonの商品情報を取得
     title = amazon_bs.select_one('.a-last')
-    print(title)
+    # print(title)
     if(title != None):
         title = title.text.replace("\n", "").replace("\u3000", "").strip()
         if(title == blockJudge):
