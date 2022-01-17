@@ -30,9 +30,9 @@ if __name__ == '__main__':
             if row[0] == "5つ星のうち5.0":
                 row[0] = "ポジ"
                 normalized_text = neologdn.normalize(row[1])
-                tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
-                text_replaced_number = re.sub(r'\d+', '0', tmp)
-                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', text_replaced_number)
+                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                # text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
@@ -44,9 +44,9 @@ if __name__ == '__main__':
             elif row[0] == "5つ星のうち4.0":
                 row[0] = "ポジ"
                 normalized_text = neologdn.normalize(row[1])
-                tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
-                text_replaced_number = re.sub(r'\d+', '0', tmp)
-                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', text_replaced_number)
+                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                # text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
@@ -58,9 +58,9 @@ if __name__ == '__main__':
             elif row[0] == "5つ星のうち2.0":
                 row[0] = "ネガ"
                 normalized_text = neologdn.normalize(row[1])
-                tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
-                text_replaced_number = re.sub(r'\d+', '0', tmp)
-                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', text_replaced_number)
+                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                # text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
@@ -71,9 +71,9 @@ if __name__ == '__main__':
             elif row[0] == "5つ星のうち1.0":
                 row[0] = "ネガ"
                 normalized_text = neologdn.normalize(row[1])
-                tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
-                text_replaced_number = re.sub(r'\d+', '0', tmp)
-                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', text_replaced_number)
+                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                # text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
@@ -127,6 +127,28 @@ if __name__ == '__main__':
     # print(se[-20:])
     # print("--" * 50)
 
+    class NumericReplaceFilter(TokenFilter):
+        def apply(self, tokens):
+            tmp = ""
+            for i,token in enumerate(tokens):
+                parts = token.part_of_speech.split(',')
+                if parts[0] == '助動詞' and token.base_form == 'ない' and (tmp.part_of_speech.split(',')[0] == '動詞' or tmp.part_of_speech.split(',')[0] == '形容詞'):
+                    tmp2 = token
+                    token = tmp
+                    token.base_form = tmp.surface + tmp2.base_form
+                    token.surface = tmp.surface + tmp2.base_form
+                    token.reading = tmp.reading + tmp2.reading
+                    token.phonetic = tmp.phonetic + tmp2.phonetic
+                    tmp = token
+                else:
+                    if tmp == "":
+                        tmp = token
+                    else:
+                        if tmp.part_of_speech.split(',')[0] != '助動詞':
+                            yield tmp
+                        tmp = token
+                    
+
     def validate():
         # 学習
         classifier = LogisticRegression()
@@ -164,11 +186,16 @@ if __name__ == '__main__':
     # 前処理
     char_filters = [
         RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
-        RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', '')]
+        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
+        RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', ''),
+        RegexReplaceCharFilter('おもしろい', '面白い'),
+        RegexReplaceCharFilter('おもしろくない', '面白くない'),
+        RegexReplaceCharFilter('たのしい', '楽しい')]
     # 後処理
     token_filters = [
-        POSKeepFilter(['名詞', '動詞', '形容詞', '副詞']),
+        POSKeepFilter(['名詞', '動詞', '形容詞', '副詞', '助動詞']),
         LowerCaseFilter(),
+        NumericReplaceFilter(),
         # CompoundNounFilter(),
         ExtractAttributeFilter("base_form")]
     # Tokenizerの再初期化

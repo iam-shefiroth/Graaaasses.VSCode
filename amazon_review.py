@@ -7,11 +7,11 @@ from sklearn.preprocessing import LabelEncoder
 from pandas import Series
 from janome.analyzer import Analyzer
 from janome.charfilter import RegexReplaceCharFilter
-from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter
+from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter,LowerCaseFilter,CompoundNounFilter
 import pandas
 import csv
-from gensim.models import word2vec
-import pickle
+import re
+import neologdn
 #windows(chromedriver.exeのパスを設定)
 chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
 
@@ -29,50 +29,72 @@ if __name__ == '__main__':
         for row in f:
             if row[0] == "5つ星のうち5.0":
                 row[0] = "ポジ"
+                normalized_text = neologdn.normalize(row[1])
+                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                # text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
+                text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
-                "text": row[1],
+                "text": text_removed_symbol,
                 }
-                # if a < 600:
+                # if a < 530:
                 a += 1
                 review_list.append(article) 
             elif row[0] == "5つ星のうち4.0":
                 row[0] = "ポジ"
+                normalized_text = neologdn.normalize(row[1])
+                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                # text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
+                text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
-                "text": row[1],
+                "text": text_removed_symbol,
                 }
-                # if a < 600:
+                # if a < 540:
                 a += 1
                 review_list.append(article) 
             elif row[0] == "5つ星のうち2.0":
                 row[0] = "ネガ"
+                normalized_text = neologdn.normalize(row[1])
+                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                # text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
+                text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
-                "text": row[1],
+                "text": text_removed_symbol,
                 }
                 b += 1
                 review_list.append(article)
             elif row[0] == "5つ星のうち1.0":
                 row[0] = "ネガ"
+                normalized_text = neologdn.normalize(row[1])
+                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
+                # text_replaced_number = re.sub(r'\d+', '0', tmp)
+                tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
+                text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 article = {
                 "label": row[0],
-                "text": row[1],
+                "text": text_removed_symbol,
                 }
                 b += 1
                 review_list.append(article)
 
         csv_file.close()
     
-    df = pandas.DataFrame(review_list)
-    filtered_by_label = df.query("label == 'ポジ' | label == 'ネガ'")
+    dataset = pandas.DataFrame(review_list)
+    filtered_by_label = dataset.query("label == 'ポジ' | label == 'ネガ'")
     group_by_label = filtered_by_label.groupby("label")
     labels_size = group_by_label.size()
     print(labels_size)
     
+    
+    label_vectorizer = LabelEncoder()
+    #数合わせ
     n = labels_size.min()
     dataset = group_by_label.apply(lambda x: x.sample(n, random_state=0))
-    label_vectorizer = LabelEncoder()
     transformed_label = label_vectorizer.fit_transform(dataset.get("label"))
     dataset["label"] = transformed_label
     # 入力と出力に分割
@@ -105,42 +127,76 @@ if __name__ == '__main__':
     # print(se[-20:])
     # print("--" * 50)
 
+    class NumericReplaceFilter(TokenFilter):
+        def apply(self, tokens):
+            tmp = ""
+            for i,token in enumerate(tokens):
+                parts = token.part_of_speech.split(',')
+                if parts[0] == '助動詞' and token.base_form == 'ない' and (tmp.part_of_speech.split(',')[0] == '動詞' or tmp.part_of_speech.split(',')[0] == '形容詞'):
+                    tmp2 = token
+                    token = tmp
+                    token.base_form = tmp.surface + tmp2.base_form
+                    token.surface = tmp.surface + tmp2.base_form
+                    token.reading = tmp.reading + tmp2.reading
+                    token.phonetic = tmp.phonetic + tmp2.phonetic
+                    tmp = token
+                else:
+                    if tmp == "":
+                        tmp = token
+                    else:
+                        if tmp.part_of_speech.split(',')[0] != '助動詞':
+                            yield tmp
+                        tmp = token
+                    
+
     def validate():
         # 学習
         classifier = LogisticRegression()
-        print(X_train)
-        print(X_test)
-        print(y_train)
-        print(y_test)
         transformed_X_train = feature_vectorizer.fit_transform(X_train)
         classifier.fit(transformed_X_train, y_train)
         # 評価
         vectorized = feature_vectorizer.transform(X_test)
-        print(vectorized)
         y_pred = classifier.predict(vectorized)
-        print(y_pred)
         print(classification_report(y_test, y_pred))
         # モデルのダンプ
         feature_to_weight = dict()
         for w, name in zip(classifier.coef_[0], feature_vectorizer.get_feature_names()):
             feature_to_weight[name] = w
-        print(feature_to_weight)
         se = Series(feature_to_weight)
         se.sort_values(ascending=False, inplace=True)
-        print(se)
         print("--Positiveの判定に効いた素性")
         print(se[:50])
         print("--Negativeの判定に効いた素性")
         print(se[-50:])
         print("--" * 50)
+        with open(r'z:\UserProfile\s20192087\Desktop\etc\review_weight.csv','w', encoding='CP932', errors='ignore') as f:
+            writer = csv.writer(f, lineterminator='\n')
+            # 全データを表示
+            for k,v in se.items():
+                csvlist=[]
+                #データ作成
+                csvlist.append(k)
+                csvlist.append(v)
+                writer.writerow(csvlist)
+            # ファイルクローズ
+            f.close()
+
         return y_pred
     
     # 前処理
     char_filters = [
-        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", "")]
+        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
+        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
+        RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', ''),
+        RegexReplaceCharFilter('おもしろい', '面白い'),
+        RegexReplaceCharFilter('おもしろくない', '面白くない'),
+        RegexReplaceCharFilter('たのしい', '楽しい')]
     # 後処理
     token_filters = [
-        POSKeepFilter(['名詞', '動詞', '形容詞', '副詞']),
+        POSKeepFilter(['名詞', '動詞', '形容詞', '副詞', '助動詞']),
+        LowerCaseFilter(),
+        NumericReplaceFilter(),
+        # CompoundNounFilter(),
         ExtractAttributeFilter("base_form")]
     # Tokenizerの再初期化
     tokenizer = Tokenizer()
