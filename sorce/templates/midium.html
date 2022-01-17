@@ -1,0 +1,27 @@
+<!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style2.css') }}" />
+    <link rel="stylesheet" type="text/css" href="/static/style2.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>調査結果</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    
+    </head>
+    <body>
+        <div style="margin-left: 10%; margin-right: 10%; margin-top: 10%; text-align: center;">
+            <h3>結果の表示には数分～数十分かかります</h3>
+            <h3>処理を実行しますか？</h3>
+            <form action="/search_advance" method="POST">
+                <input type="hidden" name="searchUrl" value={{url}}>
+                <button type="submit" name="judge" value="YES" class="btn btn-outline-primary">はい</button>
+                <button type="submit" name="judge" value="NO" class="btn btn-outline-danger">いいえ</button>
+            </form>
+        </div>
+
+
+    </body>
+    </html>

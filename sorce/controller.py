@@ -2,7 +2,8 @@ from flask import *
 
 import reviewData
 import resultData
-import service
+import time
+#import service
 
 app = Flask(__name__)
 
@@ -11,20 +12,40 @@ def search_top():
     return render_template("top.html")
 
 @app.route("/search", methods=["POST"])
-def search_result():
+def search_result_db():
     url = request.form.get('searchUrl')
     
     if not(checkUrl(url)):
         return render_template("top.html", errorMessage="AmazonのURLではないです。")
     
-    result = service.reviewSelection(url)
+    if(False): # DBをチェックし該当するURLあり
+        result = null # DBからデータを引っ張ってくる
+        return render_template("result.html", result = result) # 結果画面へ
+    else :
+        return render_template("midium.html", url = url) # 確認画面へ
+        
+
+@app.route("/search_advance", methods=["POST"])
+def search_result():
     
-    # 上手く情報を取得できたか確認
-    if(result.error != ''):
-        return render_template("top.html", errorMessage=result.error)
-    # result = sampleResult()
-    #print("{}".format(result.posiReviewRatio))
-    return render_template("result.html", result = result)
+    judge = request.form.get('judge')
+    url = request.form.get('searchUrl')
+    
+    if(judge == "YES"): # 選択画面にて「はい」が選択された場合
+        print("YESです")# 消していいです
+        
+        #result = service.reviewSelection(url)
+    
+        # 上手く情報を取得できたか確認
+        #if(result.error != ''):
+            #return render_template("top.html", errorMessage=result.error)
+        # result = sampleResult()
+        #print("{}".format(result.posiReviewRatio))
+        return render_template("result.html", result = sampleResult()) # 結果画面へ
+    else: # 選択画面にて「いいえ」が選択された場合
+        print("NOです") # 消していいです
+        return render_template("top.html") # トップ画面へ
+    
 
 def checkUrl(url):
     return url.startswith('https://www.amazon.co.jp/')
