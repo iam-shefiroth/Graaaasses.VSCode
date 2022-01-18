@@ -9,13 +9,15 @@ from sklearn.metrics import classification_report
 from sklearn.preprocessing import LabelEncoder
 from janome.analyzer import Analyzer
 from janome.charfilter import RegexReplaceCharFilter
-from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter
+from janome.tokenfilter import ExtractAttributeFilter, POSKeepFilter, TokenFilter,LowerCaseFilter,CompoundNounFilter
 import pandas
 from janome.tokenizer import Tokenizer
 from os import P_DETACH, error, startfile
 import codecs
 import numpy as np
 import io
+import re
+import neologdn
 np.seterr(divide='ignore') 
 #windows(chromedriver.exeのパスを設定)
 chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
@@ -128,11 +130,50 @@ if __name__ == '__main__':
 # CorpusElementのリスト
 naive_corpus = []
 
+class NumericReplaceFilter(TokenFilter):
+        def apply(self, tokens):
+            tmp = ""
+            for i,token in enumerate(tokens):
+                parts = token.part_of_speech.split(',')
+                if parts[0] == '助動詞' and token.base_form == 'ない' and (tmp.part_of_speech.split(',')[0] == '動詞' or tmp.part_of_speech.split(',')[0] == '形容詞'):
+                    tmp2 = token
+                    token = tmp
+                    token.base_form = tmp.surface + tmp2.base_form
+                    token.surface = tmp.surface + tmp2.base_form
+                    token.reading = tmp.reading + tmp2.reading
+                    token.phonetic = tmp.phonetic + tmp2.phonetic
+                    tmp = token
+                else:
+                    if tmp == "":
+                        tmp = token
+                    else:
+                        if tmp.part_of_speech.split(',')[0] != '助動詞':
+                            yield tmp
+                        tmp = token
+
+# 前処理
+char_filters = [
+    RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
+    RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', ''),
+    RegexReplaceCharFilter('おもしろい', '面白い'),
+    RegexReplaceCharFilter('おもしろくない', '面白くない'),
+    RegexReplaceCharFilter('たのしい', '楽しい')]
+# 後処理
+token_filters = [
+    POSKeepFilter(['名詞', '動詞', '形容詞', '副詞', '助動詞']),
+    LowerCaseFilter(),
+    NumericReplaceFilter(),
+    # CompoundNounFilter(),
+    ExtractAttributeFilter("base_form")]
+
 naive_tokenizer = Tokenizer()
 
 for text2 in review_list:
-    tokens = naive_tokenizer.tokenize(text2)
-    element = CorpusElement(text2, tokens)
+    normalized_text = neologdn.normalize(text2)
+    tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
+    text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
+    tokens = naive_tokenizer.tokenize(text_removed_symbol)
+    element = CorpusElement(text_removed_symbol, tokens)
     naive_corpus.append(element)
 
 # pn_ja.dicファイルから、単語をキー、極性値を値とする辞書を得る
@@ -158,7 +199,7 @@ def load_pn_dict():
 def get_pn_scores(tokens, pn_dic):
     scores = []
     
-    for surface in [t.surface for t in tokens if t.part_of_speech.split(',')[0] in ['動詞','名詞', '形容詞', '副詞']]:
+    for surface in [t.surface for t in tokens if t.part_of_speech.split('')[0] in ['動詞','名詞', '形容詞', '副詞']]:
         # print(surface)
         if surface in pn_dic:
             scores.append(pn_dic[surface])
@@ -190,7 +231,7 @@ print("ネガ%",n_per)
 print("ベスト3")
 # 最も高い3件を表示
 for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:3]:
-    print('ポジティブ度: {:.3f}'.format(sum(element.pn_scores)))
+    print('ポジネガ度: {:.3f}'.format(sum(element.pn_scores)))
     print('Posi: {}'.format(io.StringIO(element.text2).readline()))
     print("--" * 50)
 # Error
@@ -198,6 +239,6 @@ for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True
 print("ワースト3")
 # 平均値が最も低い3件を表示
 for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:3]:
-    print('ネガティブ度: {:.3f}'.format(sum(element.pn_scores)))
+    print('ポジネガ度: {:.3f}'.format(sum(element.pn_scores)))
     print('Nega: {}'.format(io.StringIO(element.text2).readline()))
     print("--" * 50)

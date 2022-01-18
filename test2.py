@@ -186,7 +186,6 @@ if __name__ == '__main__':
     # 前処理
     char_filters = [
         RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
-        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
         RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', ''),
         RegexReplaceCharFilter('おもしろい', '面白い'),
         RegexReplaceCharFilter('おもしろくない', '面白くない'),
