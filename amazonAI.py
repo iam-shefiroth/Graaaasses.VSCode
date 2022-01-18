@@ -199,7 +199,7 @@ def load_pn_dict():
 def get_pn_scores(tokens, pn_dic):
     scores = []
     
-    for surface in [t.surface for t in tokens if t.part_of_speech.split('')[0] in ['動詞','名詞', '形容詞', '副詞']]:
+    for surface in [t.surface for t in tokens if t.part_of_speech.split(',')[0] in ['動詞','名詞', '形容詞', '副詞']]:
         # print(surface)
         if surface in pn_dic:
             scores.append(pn_dic[surface])
