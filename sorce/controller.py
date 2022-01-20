@@ -4,7 +4,7 @@ import reviewData
 import resultData
 import time
 #import service
-# import check
+# import repository
 
 app = Flask(__name__)
 
@@ -19,7 +19,7 @@ def search_result_db():
     if not(checkUrl(url)):
         return render_template("top.html", errorMessage="AmazonのURLではないです。")
     
-    # isJudge = check.checkdb(url)
+    # isJudge = repository.checkdb(url)
     
     if(False): # DBをチェックし該当するURLあり
         result = null # DBからデータを引っ張ってくる

@@ -8,6 +8,7 @@ import time
 import resultData
 import amazon_selection
 import amazonAIt
+import repository
 
 
 # ロボット扱いにされた場合、使う
@@ -103,6 +104,9 @@ def reviewSelection(url):
     
     # ポジネガ判定の比率をデータクラスに挿入する
     selectionInfo.reviewRatio(resultReview["totalposiper"],resultReview["totalnegaper"])
+    
+    # Amazonreview情報をcsvに書き込む
+    # repository.insertdb(selectionInfo)
     
     resultTime(resultTimer)
     return selectionInfo
