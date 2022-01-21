@@ -20,7 +20,7 @@ import re
 import neologdn
 np.seterr(divide='ignore') 
 #windows(chromedriver.exeのパスを設定)
-chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
+# chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
  
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'

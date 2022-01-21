@@ -13,7 +13,7 @@ import csv
 import re
 import neologdn
 #windows(chromedriver.exeのパスを設定)
-chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
+# chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
 
 #インポート時は実行されないように記載
 if __name__ == '__main__':
