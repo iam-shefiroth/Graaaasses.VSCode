@@ -108,33 +108,52 @@ def reviewSelection(url):
 
 #テスト用受け渡し※後に消せ
 if __name__ == '__main__':
-    selection = reviewSelection(testurl)
-    print(selection.img)
-    print(selection.name)
-    print(selection.url)
-    for i in range(len(selection.positive)):
-        print("ポジティブ度{0}位".format(i+1),selection.posititle[i])
-        print(selection.positive[i])
-        print("**"*50)
-        print("ネガティブ度{0}位".format(i+1),selection.negatitle[i])
-        print(selection.negative[i])
-        print("**"*50)
+    db = sqlite3.connect("kekka.db")
     
-    print(selection.posiReviewRatio)
-    print(selection.negaReviewRatio)
-    print(selection.totalcount)
-    print(selection.posicount)
-    print(selection.negacount)
+    sql = 'SELECT amazon_url FROM kekka WHERE amazon_url = ?'
+    cur = db.execute(sql,(testurl,))
+    data = cur.fetchall()
+    temurl = ''.join(data[0])
+    print(temurl)
+    db.close()
 
-    db = sqlite3.connect(
-        "kekka.db",              #ファイル名
-        isolation_level=None)
+    if testurl != temurl:
+        selection = reviewSelection(testurl)
+        print(selection.img)
+        print(selection.name)
+        print(selection.url)
+        for i in range(len(selection.positive)):
+            print("ポジティブ度{0}位".format(i+1),selection.posititle[i])
+            print(selection.positive[i])
+            print("**"*50)
+            print("ネガティブ度{0}位".format(i+1),selection.negatitle[i])
+            print(selection.negative[i])
+            print("**"*50)
+        print(selection.posiReviewRatio)
+        print(selection.negaReviewRatio)
+        print(selection.totalcount)
+        print(selection.posicount)
+        print(selection.negacount)
+        
+        db = sqlite3.connect(
+            "kekka.db",              #ファイル名
+            isolation_level=None)
     
-    sql1 = 'CREATE TABLE IF NOT EXISTS kekka (amazon_url TEXT primary key,product_name TEXT, img TEXT,positaitle1 TEXT,positive1 TEXT,positaitle2 TEXT,positive2 TEXT,positaitle3 TEXT,positive3 TEXT,negataitle1 TEXT,negative1 TEXT,negataitle2 TEXT,negative2 TEXT,negataitle3 TEXT,negative3 TEXT,posicount INTEGER,negacount INTEGER)'
-    db.execute(sql1)
-
-    sql2 = 'INSERT INTO kekka(amazon_url,product_name, img,positaitle1,positive1,positaitle2,positive2,positaitle3,positive3,negataitle1,negative1,negataitle2,negative2,negataitle3,negative3,posicount,negacount) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-    data = (testurl,selection.name,selection.img,selection.posititle[0],selection.positive[0],selection.posititle[1],selection.positive[1],selection.posititle[2],selection.positive[2],selection.negatitle[0],selection.negative[0],selection.negatitle[1],selection.negative[1],selection.negatitle[2],selection.negative[2],selection.posicount,selection.negacount)
-    db.commit()
-    db.execute(sql2,data)     #sql文を実行
-    db.close()          #データベースを閉じる
+        sql1 = 'CREATE TABLE IF NOT EXISTS kekka (amazon_url TEXT primary key,product_name TEXT, img TEXT,positaitle1 TEXT,positive1 TEXT,positaitle2 TEXT,positive2 TEXT,positaitle3 TEXT,positive3 TEXT,negataitle1 TEXT,negative1 TEXT,negataitle2 TEXT,negative2 TEXT,negataitle3 TEXT,negative3 TEXT,posicount INTEGER,negacount INTEGER)'
+        db.execute(sql1)
+        db.close()
+    
+        sql2 = 'INSERT INTO kekka(amazon_url,product_name, img,positaitle1,positive1,positaitle2,positive2,positaitle3,positive3,negataitle1,negative1,negataitle2,negative2,negataitle3,negative3,posicount,negacount) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+        data = (testurl,selection.name,selection.img,selection.posititle[0],selection.positive[0],selection.posititle[1],selection.positive[1],selection.posititle[2],selection.positive[2],selection.negatitle[0],selection.negative[0],selection.negatitle[1],selection.negative[1],selection.negatitle[2],selection.negative[2],selection.posicount,selection.negacount)
+        db.commit()
+        db.execute(sql2,data)     #sql文を実行
+        db.close()          #データベースを閉じる
+    else:
+        db = sqlite3.connect("kekka.db")
+        sql = 'SELECT * FROM kekka WHERE amazon_url = ?'
+        cur = db.execute(sql,(temurl,))
+        kekka = cur.fetchall()
+        for data in kekka[0]:
+            print(data)
+            print('**'*50)
+        db.close()
