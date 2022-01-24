@@ -10,8 +10,8 @@ import pandas as pd
 import re
 
 #windows(chromedriver.exeのパスを設定)※要変更
-#chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
-chrome_path = "z:\\UserProfile\s20192060\Desktop\AI開発\chromedriver.exe"
+chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
+# chrome_path = "z:\\UserProfile\s20192060\Desktop\AI開発\chromedriver.exe"
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
 

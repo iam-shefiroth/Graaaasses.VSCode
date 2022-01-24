@@ -3,8 +3,8 @@ from flask import *
 import reviewData
 import resultData
 import time
-#import service
-# import repository
+import service
+import repository
 
 app = Flask(__name__)
 
@@ -19,14 +19,13 @@ def search_result_db():
     if not(checkUrl(url)):
         return render_template("top.html", errorMessage="AmazonのURLではないです。")
     
-    # isJudge = repository.checkdb(url)
+    result = repository.selectdb(url)
     
-    if(False): # DBをチェックし該当するURLあり
-        result = null # DBからデータを引っ張ってくる
-        return render_template("result.html", result = result) # 結果画面へ
-    else :
+    if(result.error == "Not Data"): # DBをチェックし該当するURLあり
         return render_template("midium.html", url = url) # 確認画面へ
-        
+    else :
+        # result = None # DBからデータを引っ張ってくる
+        return render_template("result.html", result = result) # 結果画面へ
 
 @app.route("/search_advance", methods=["POST"])
 def search_result():
@@ -37,14 +36,15 @@ def search_result():
     if(judge == "YES"): # 選択画面にて「はい」が選択された場合
         print("YESです")# 消していいです
         
-        #result = service.reviewSelection(url)
+        result = service.reviewSelection(url)
     
         # 上手く情報を取得できたか確認
-        #if(result.error != ''):
-            #return render_template("top.html", errorMessage=result.error)
+        if(result.error != ''):
+            return render_template("top.html", errorMessage=result.error)
+        # ↓テスト用レビュー結果
         # result = sampleResult()
-        #print("{}".format(result.posiReviewRatio))
-        return render_template("result.html", result = sampleResult()) # 結果画面へ
+        # print("{}".format(result.posiReviewRatio))
+        return render_template("result.html", result = result) # 結果画面へ
     else: # 選択画面にて「いいえ」が選択された場合
         print("NOです") # 消していいです
         return render_template("top.html") # トップ画面へ
