@@ -5,10 +5,13 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import textwrap
 import resultData
+import datetime
+import pandas as pd 
+import re
 
 #windows(chromedriver.exeのパスを設定)※要変更
-chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
-
+#chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
+chrome_path = "z:\\UserProfile\s20192060\Desktop\AI開発\chromedriver.exe"
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
 
@@ -106,14 +109,61 @@ def get_product_overview(url):
     
     return overview_list
 
+# Amazonの発売日もしくは取り扱い開始日を取得
+def getOriginDate(url):
+    options = Options()                     #　オプションを用意
+    options.add_argument('--incognito')     #　シークレットモードの設定を付与
+    #　chromedriverのパスとパラメータを設定
+    options.add_argument('--headless')
+    driver = webdriver.Chrome(executable_path=chrome_path,options=options)
+    driver.get(url)                         #　chromeブラウザでurlを開く
+    driver.implicitly_wait(3)
+    try:
+        tableElem = driver.find_element_by_id('productDetails_detailBullets_sections1')
+        html = tableElem.get_attribute('outerHTML')
+        #print(type(html))
+        dfs = pd.read_html(html)
+        df = dfs[0].values.tolist()
+        dates = []
+        for data in df:
+            if data[0] in 'Amazon.co.jp での取り扱い開始日' or '発売日' in data[0]:
+                date =  datetime.datetime.strptime(data[1], '%Y/%m/%d')
+                dates.append(date)
+        date = decideDates(dates)
+        return date
+    except:
+        pass
+        try:
+            ulElem = driver.find_element_by_id('detailBullets_feature_div')
+            liElem = ulElem.find_elements_by_class_name('a-list-item')
+            dates = []
+            for li in liElem:
+                if '発売日' in li.text or '取り扱い開始日' in li.text:
+                    date = datetime.datetime.strptime(re.findall('20.+', li.text)[0], '%Y/%m/%d')
+                    dates.append(date)
+            date = decideDates(dates)
+            return date
+        except:
+            pass
+            print("取得失敗")
+            return None
+                
+def decideDates(dates):
+    if len(dates) > 1:
+        return heapq.nlargest(1, dates)[0]
+    else:
+        return dates[0]
+
 # 全ページ分をリストにする
 def get_all_reviews(url):
     
     review_list = []                        #　初期化
+    origin_date = getOriginDate(url)
     i = 1                                   #　ループ番号の初期化
     while True:
         print(i,'page_search')              #　処理状況を表示
         i += 1                              #　ループ番号を更新
+        
         url = url.replace('dp', 'product-reviews')
         text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
         amazon_bs = bs4.BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
@@ -131,15 +181,27 @@ def get_all_reviews(url):
         review_title = amazon_bs.select('a.review-title')
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
         stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
+        spandate  = amazon_bs.select('span.review-date') # レビュー日取得
         # print(text)
         
         for j in range(len(stars)):
+            
+            if origin_date is None:
+                dateResult = "未定義"
+            else:
+                reviewDate = re.findall('2.*?日', spandate[j].text)
+                reviewDate = datetime.datetime.strptime(reviewDate[0], '%Y年%m月%d日')
+                dateResult = (reviewDate - origin_date).days
+            star = re.findall('[0-5].[0-5]', stars[j].text)[0]
+            starFloat = float(star)
             article = {
             "title":review_title[j].text.replace("\n", "").replace("\u3000", ""),
             "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
-            "label": stars[j].text,
+            "dateResult": dateResult,
+            "star": star,
             }
             review_list.append(article)                      #　レビュー情報をreview_listに格納
+        
         next_page = amazon_bs.select('li.a-last a')         # 「次へ」ボタンの遷移先取得
         
         # 次のページが存在する場合
