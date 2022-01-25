@@ -2,9 +2,8 @@ from flask import *
 
 import reviewData
 import resultData
-import time
-#import service
-# import repository
+import service
+import repository
 
 app = Flask(__name__)
 
@@ -14,45 +13,50 @@ def search_top():
 
 @app.route("/search", methods=["POST"])
 def search_result_db():
+    
+    # top.htmlから情報を取得
     url = request.form.get('searchUrl')
     
+    # ↓AmazonのURlかどうか確認
     if not(checkUrl(url)):
         return render_template("top.html", errorMessage="AmazonのURLではないです。")
     
-    # isJudge = repository.checkdb(url)
+    # DB内にあるかURLを使って検索
+    result = repository.selectdb(url)
     
-    if(False): # DBをチェックし該当するURLあり
-        result = null # DBからデータを引っ張ってくる
-        return render_template("result.html", result = result) # 結果画面へ
-    else :
+    if(result.error == "Not Data"): # DBをチェックし該当するURLがあるか確認
         return render_template("midium.html", url = url) # 確認画面へ
-        
+    else :
+        return render_template("result.html", result = result) # 結果画面へ
 
 @app.route("/search_advance", methods=["POST"])
 def search_result():
     
+    # midium.htmlから情報を取得
     judge = request.form.get('judge')
     url = request.form.get('searchUrl')
     
     if(judge == "YES"): # 選択画面にて「はい」が選択された場合
-        print("YESです")# 消していいです
         
-        #result = service.reviewSelection(url)
+        # スクレイピングを利用しAmazonreview情報を取得する
+        result = service.reviewSelection(url)
     
         # 上手く情報を取得できたか確認
-        #if(result.error != ''):
-            #return render_template("top.html", errorMessage=result.error)
-        # result = sampleResult()
-        #print("{}".format(result.posiReviewRatio))
-        return render_template("result.html", result = sampleResult()) # 結果画面へ
+        if(result.error != ''):
+            return render_template("top.html", errorMessage=result.error)
+        else:
+            # ↓テスト用レビュー結果(最終提出する際に消します)
+            # result = sampleResult()
+            # print("{}".format(result.posiReviewRatio))
+            return render_template("result.html", result = result) # 結果画面へ
     else: # 選択画面にて「いいえ」が選択された場合
-        print("NOです") # 消していいです
         return render_template("top.html") # トップ画面へ
     
 
 def checkUrl(url):
     return url.startswith('https://www.amazon.co.jp/')
 
+# ↓最終提出する際に消します
 def sampleResult():
         result = resultData.ResultData()
         result.url = "https://www.amazon.co.jp/%E3%83%AA%E3%83%A5%E3%82%A6%E3%82%B8%E5%BC%8F%E8%87%B3%E9%AB%98%E3%81%AE%E3%83%AC%E3%82%B7%E3%83%94-%E4%BA%BA%E7%94%9F%E3%81%A7%E3%81%84%E3%81%A1%E3%81%B0%E3%82%93%E7%BE%8E%E5%91%B3%E3%81%97%E3%81%84-%E5%9F%BA%E6%9C%AC%E3%81%AE%E6%96%99%E7%90%86100-%E3%83%AA%E3%83%A5%E3%82%A6%E3%82%B8/dp/4909044345/ref=cm_cr_arp_d_product_top?ie=UTF8"

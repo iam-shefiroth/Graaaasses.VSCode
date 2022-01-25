@@ -15,7 +15,7 @@ class ResultData():
     totalcount:int              #総レビュー数
     posicount:int               #ポジティブレビュー数
     negacount:int               #ネガティブレビュー数
-    error:str
+    error:str                   #エラーメッセージ
     
     # Amazon商品の概要情報を挿入する
     def __init__(self,insert_url = '',insert_name = '',insert_img = '',totalcnt = 0,posicnt = 0,negacnt = 0,err = ''):
