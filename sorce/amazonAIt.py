@@ -149,7 +149,6 @@ def analysisreview(amazonreview):
                     "posiper":sum(element.pn_scores),
                     "text":io.StringIO(element.text2).readline()}
             bestlist.append(best)
-        # Error
         choise["positive"] = bestlist
     
 

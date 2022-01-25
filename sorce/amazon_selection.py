@@ -2,9 +2,6 @@ from time import sleep
 import bs4
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
-import textwrap
-import resultData
 import datetime
 import pandas as pd 
 import re
@@ -36,47 +33,21 @@ def get_amazon_page_info(url):
     
     return text                             #　取得したページ情報を返す
 
-
-# ASIN取得2
-def get_asin_from_amazon_2(url):
-     
-    asin = ""
-    #　ヘッドレスモードでブラウザを起動
-    options = Options()
-    options.add_argument('--headless')
-     
-    # ブラウザーを起動
-    driver = webdriver.Chrome("z:/UserProfile/s20193085/Desktop/data/etc/chromedriver.exe", options=options)
-    driver.get(url)
-    driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
-     
-    elem_base = driver.find_element_by_id('ASIN')
-    if elem_base:
-        asin = elem_base.get_attribute("value")
-    else:
-        print("NG")
-         
-    # ブラウザ停止
-    driver.quit()
-     
-    return asin
-
 #商品の情報をリストにする
 def get_product_overview(url):
     print("now_reading_page")
     text = get_amazon_page_info(url)
     amazon_bs = bs4.BeautifulSoup(text,features='lxml')
     
-    #amazonの商品情報を取得
+    #スクレイピングブロックチェック
     title = amazon_bs.select_one('.a-last')
-    # print(title)
     if(title != None):
         title = title.text.replace("\n", "").replace("\u3000", "").strip()
         if(title == blockJudge):
             overview_list = {"o_title":"!Not Scraping!","o_category":"スクレイピングブロックされています、時間が経ってから再度ご利用ください"}
             return overview_list
     
-    # ↓商品名
+    # 商品名
     title = amazon_bs.select_one('.product-title-word-break')
     
     # Amazon商品概要サイトではないURLかどうか確認する
@@ -168,7 +139,7 @@ def get_all_reviews(url):
         text = get_amazon_page_info(url)    #　amazonの商品ページ情報(HTML)を取得する
         amazon_bs = bs4.BeautifulSoup(text, features='lxml')    #　HTML情報を解析する
         
-        # スクレイピングブロックされてないか確認
+        # スクレイピングブロックチェック
         title = amazon_bs.select_one('.a-last')
         if(title != None):
             title = title.text.replace("\n", "").replace("\u3000", "").strip()
@@ -178,14 +149,14 @@ def get_all_reviews(url):
                 review_list.append(article)
                 return review_list
         
-        review_title = amazon_bs.select('a.review-title')
+        review_title = amazon_bs.select('a.review-title')   #ページ内の全レビュータイトルを取得
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
-        stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
-        spandate  = amazon_bs.select('span.review-date') # レビュー日取得
-        # print(text)
+        stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')    # ページ内の全評価数を取得
+        spandate  = amazon_bs.select('span.review-date') # ページ内の全レビュー日を取得
         
         for j in range(len(stars)):
             
+            # origin_dateから日数を取得したかどうか確認
             if origin_date is None:
                 dateResult = "未定義"
             else:

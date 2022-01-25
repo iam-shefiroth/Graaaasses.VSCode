@@ -16,7 +16,7 @@ testposiratio = round((testposicnt / testtotalcnt) * 100,1)
 testnegaratio = round(100 - testposiratio,1)
 
 
-# 入力されたurlと格納されているdb(csv)内のurlを比較する
+# 入力されたurlと格納されているdb内のurlを比較する
 def selectdb(url):
     db = sqlite3.connect("kekka.db")
     temurl = ''
@@ -26,24 +26,31 @@ def selectdb(url):
     data = cur.fetchall()
     print(data)
     print(1)
+    
+    # sql実行結果の件数が0件ではないか確認
     if len(data) != 0:
         temurl = ''.join(data[0])
         print(temurl)
         print(2)
     db.close()
+    
+    # 入力されたurlとsql検索結果のurlが一致したかどうか確認
     if (url == temurl):
         db = sqlite3.connect("kekka.db")
+        # 入力されたurlの全情報をsqlから取得する
         sql = 'SELECT * FROM kekka WHERE amazon_url = ?'
         cur = db.execute(sql,(temurl,))
         kekka = cur.fetchall()
         work = kekka[0]
+        
         # 総合レビュー数
         totalreview = work[15] + work[16]
         
         # ポジティブ率、ネガティブ率を産出する
         posiper = work[15] / totalreview
         negaper = work[16] / totalreview
-            # 処理結果を処理結果クラスに挿入する
+        
+        # 処理結果を処理結果クラスに挿入する
         # 商品概要の取得結果をデータクラスに挿入する
         selectionInfo = resultData.ResultData(work[0],work[1],work[2],totalreview,work[15],work[16])
     
@@ -57,13 +64,12 @@ def selectdb(url):
     
         # ポジネガ判定の比率をデータクラスに挿入する
         selectionInfo.reviewRatio(posiper,negaper)
-        print(selectionInfo)
     else:
         selectionInfo = resultData.ResultData(err="Not Data")
 
     return selectionInfo
 
-# スクレイピングで取得した情報をdb(csv)に書き込む
+# スクレイピングで取得した情報をdbに書き込む
 def insertdb(resultData):
     db = sqlite3.connect("kekka.db",              #ファイル名
         isolation_level=None)

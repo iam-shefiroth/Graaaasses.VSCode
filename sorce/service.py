@@ -49,7 +49,7 @@ def resultTime(resultTimer):
 def reviewSelection(url):
     selectionInfo = []
     
-    # 処理速度を計る
+    # 処理速度を計る（後に消します）
     resultTimer = []
     resultTimer.append(time.perf_counter())
     
