@@ -25,6 +25,10 @@ class ResultData():
         self.totalcount = totalcnt
         self.posicount = posicnt
         self.negacount = negacnt
+        self.positive = []
+        self.negative = []
+        self.posititle = []
+        self.negatitle = []
         self.error = err
     
     # ポジティブレビューを挿入する
