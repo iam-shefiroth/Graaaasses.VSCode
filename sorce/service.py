@@ -92,6 +92,9 @@ def reviewSelection(url):
         selection = resultData.ResultData(err = "レビュー数が少ないため分析出来ません")
         return selection
     
+    # サクラ判定
+    
+    
     #レビューのポジネガ判定とその分析を行う
     resultReview = analysischoise(overview["o_category"],all_review)
     resultTimer.append(time.perf_counter())
@@ -107,7 +110,7 @@ def reviewSelection(url):
     # ポジネガ判定の比率をデータクラスに挿入する
     selectionInfo.reviewRatio(resultReview["totalposiper"],resultReview["totalnegaper"])
     
-    # Amazonreview情報をcsvに書き込む
+    # Amazonreview情報をDBに書き込む
     repository.insertdb(selectionInfo)
     
     resultTime(resultTimer)
