@@ -11,21 +11,24 @@ import amazonAIt
 import repository
 
 
-# ロボット扱いにされた場合、使う
-# testurl = "z:/UserProfile/s20193085/Desktop/data/check/Amazon.co.jp_ スーパーマリオ 3Dワールド + フューリーワールド_オンラインコード版 _ ゲーム.html"
 # ロボット扱いにされてない場合、使う
 testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC-%E3%83%9E%E3%83%AA%E3%82%AA%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3-Switch/dp/B07DPDDP5V/ref=pd_sbs_3/356-0976207-0608456?pd_rd_w=VK50K&pf_rd_p=133595aa-365a-4ded-92cd-226dcfd5ea4f&pf_rd_r=TWF2FTF3DDCBJSTB9RFC&pd_rd_r=4d37ec4a-17d3-4ffd-88ba-bd5668667080&pd_rd_wg=lAQH4&pd_rd_i=B07DPDDP5V&psc=1"
 # testurl = "https://www.amazon.co.jp/%E3%83%9E%E3%83%AA%E3%82%AA-%E3%82%BD%E3%83%8B%E3%83%83%E3%82%AF-%E6%9D%B1%E4%BA%AC2020%E3%82%AA%E3%83%AA%E3%83%B3%E3%83%94%E3%83%83%E3%82%AF-%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%97%E3%83%A9%E3%82%A4%E3%82%B9-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B09MZ6YQG5/ref=sr_1_6?crid=64D3261VWMSR&keywords=%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%A2%E3%83%B3%E3%83%89%E3%82%BD%E3%83%8B%E3%83%83%E3%82%AF&qid=1640050427&s=videogames&sprefix=%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%A2%E3%83%B3%E3%83%89%2Cvideogames%2C399&sr=1-6"
+
+# 商品のジャンル判定
+def categorycheck(category):
+    check = ''
+    if category == "ゲームソフト":
+        check = 'OK'
+    else:
+        check = 'NO'
+    return check
 
 # 商品のジャンル次第で分析するファイルを選ぶ
 def analysischoise(category,allreview):
     resultReview = ""
     if(category == "ゲームソフト"):
-        resultReview = amazonAIt.analysisreview(allreview) 
-    
-    else:
-        resultReview = None
-        
+        resultReview = amazonAIt.analysisreview(allreview)
     return resultReview
 
 # 格納されてるレビュー結果をデータクラスに入れる
@@ -62,6 +65,12 @@ def reviewSelection(url):
         selection = resultData.ResultData(err = overview["o_category"])
         return selection
     
+    # 現在対応してるカテゴリーかどうか確認する
+    judge = categorycheck(overview["o_category"])
+    if judge == "NO":
+        selection = resultData.ResultData(err = "この商品のジャンルは現在対応しておりません")
+        return selection
+    
     #レビューのスクレイピングを取得する
     all_review = amazon_selection.get_all_reviews(overview["review"])
     # all_review = amazon_selection.get_all_reviews("all_review = amazon_selection.get_all_reviews")
@@ -83,16 +92,9 @@ def reviewSelection(url):
         selection = resultData.ResultData(err = "レビュー数が少ないため分析出来ません")
         return selection
     
-    # サクラレビューチェック
-    
     #レビューのポジネガ判定とその分析を行う
     resultReview = analysischoise(overview["o_category"],all_review)
     resultTimer.append(time.perf_counter())
-    
-    # うまく処理されてないか確認
-    if(resultReview == None):
-        selection = resultData.ResultData(err = "この商品のジャンルは現在対応しておりません")
-        return selection
 
     # 処理結果を処理結果クラスに挿入する
     # 商品概要の取得結果をデータクラスに挿入する
