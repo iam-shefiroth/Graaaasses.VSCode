@@ -60,8 +60,16 @@ def get_product_overview(url):
     image = amazon_bs.select('#main-image-container > ul > li.image.item.itemNo0.maintain-height.selected > span > span > div > img')
     image = image[0].attrs['src']
     
+    
     # 商品のカテゴリー
     category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
+    
+    # 深いパンくずリストを取得できたかどうか確認
+    if category == None:
+        # 一つ手前のぱんくずリストを取得する
+        category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-child(3) > span > a')
+        if category == None:
+            category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-child(1) > span > a')
     category = category.text.replace("\n", "").replace("\u3000", "").strip()
 
     # 商品の全レビューURL
