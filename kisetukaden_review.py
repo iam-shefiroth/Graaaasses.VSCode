@@ -13,15 +13,15 @@ import csv
 import re
 import neologdn
 #windows(chromedriver.exeのパスを設定)
-chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
+# chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
 
 #インポート時は実行されないように記載
 if __name__ == '__main__':
      
     #　Amzon商品ページ
     review_list = []
-    for i in range(16):
-        csv_file = open(r'z:\UserProfile\s20192087\Desktop\etc\reviewData{0}.csv'.format(i), "r", encoding="ms932", errors="", newline="" )
+    for i in range(55):
+        csv_file = open(r'z:\UserProfile\s20192087\Desktop\etc\kisetukaden{0}.csv'.format(i), "r", encoding="ms932", errors="", newline="" )
         #リスト形式
         f = csv.reader(csv_file, delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
         a = 0
@@ -34,13 +34,13 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                article = {
-                "label": row[0],
-                "text": text_removed_symbol,
-                }
-                # if a < 530:
-                a += 1
-                review_list.append(article) 
+                if len(text_removed_symbol) > 150:
+                    article = {
+                        "label": row[0],
+                        "text": text_removed_symbol,
+                    }
+                    a += 1
+                    review_list.append(article) 
             elif row[0] == "5つ星のうち4.0":
                 row[0] = "ポジ"
                 normalized_text = neologdn.normalize(row[1])
@@ -48,13 +48,13 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                article = {
-                "label": row[0],
-                "text": text_removed_symbol,
-                }
-                # if a < 540:
-                a += 1
-                review_list.append(article) 
+                if len(text_removed_symbol) > 150:
+                    article = {
+                        "label": row[0],
+                        "text": text_removed_symbol,
+                    }
+                    a += 1
+                    review_list.append(article) 
             elif row[0] == "5つ星のうち2.0":
                 row[0] = "ネガ"
                 normalized_text = neologdn.normalize(row[1])
@@ -62,12 +62,13 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                article = {
-                "label": row[0],
-                "text": text_removed_symbol,
-                }
-                b += 1
-                review_list.append(article)
+                if len(text_removed_symbol) > 1:
+                    article = {
+                        "label": row[0],
+                        "text": text_removed_symbol,
+                    }
+                    b += 1
+                    review_list.append(article) 
             elif row[0] == "5つ星のうち1.0":
                 row[0] = "ネガ"
                 normalized_text = neologdn.normalize(row[1])
@@ -75,12 +76,13 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                article = {
-                "label": row[0],
-                "text": text_removed_symbol,
-                }
-                b += 1
-                review_list.append(article)
+                if len(text_removed_symbol) > 1:
+                    article = {
+                        "label": row[0],
+                        "text": text_removed_symbol,
+                    }
+                    b += 1
+                    review_list.append(article) 
 
         csv_file.close()
     
@@ -169,7 +171,7 @@ if __name__ == '__main__':
         print("--Negativeの判定に効いた素性")
         print(se[-50:])
         print("--" * 50)
-        with open(r'z:\UserProfile\s20192087\Desktop\etc\review_weight.csv','w', encoding='CP932', errors='ignore') as f:
+        with open(r'z:\UserProfile\s20192087\Desktop\etc\review_weight2.csv','w', encoding='CP932', errors='ignore') as f:
             writer = csv.writer(f, lineterminator='\n')
             # 全データを表示
             for k,v in se.items():
@@ -185,7 +187,6 @@ if __name__ == '__main__':
     
     # 前処理
     char_filters = [
-        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
         RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
         RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', ''),
         RegexReplaceCharFilter('おもしろい', '面白い'),

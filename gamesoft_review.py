@@ -34,13 +34,13 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                article = {
-                "label": row[0],
-                "text": text_removed_symbol,
-                }
-                # if a < 530:
-                a += 1
-                review_list.append(article) 
+                if len(text_removed_symbol) > 80:
+                    article = {
+                        "label": row[0],
+                        "text": text_removed_symbol,
+                    }
+                    a += 1
+                    review_list.append(article) 
             elif row[0] == "5つ星のうち4.0":
                 row[0] = "ポジ"
                 normalized_text = neologdn.normalize(row[1])
@@ -48,13 +48,13 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                article = {
-                "label": row[0],
-                "text": text_removed_symbol,
-                }
-                # if a < 540:
-                a += 1
-                review_list.append(article) 
+                if len(text_removed_symbol) > 80:
+                    article = {
+                        "label": row[0],
+                        "text": text_removed_symbol,
+                    }
+                    a += 1
+                    review_list.append(article) 
             elif row[0] == "5つ星のうち2.0":
                 row[0] = "ネガ"
                 normalized_text = neologdn.normalize(row[1])
@@ -62,12 +62,13 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                article = {
-                "label": row[0],
-                "text": text_removed_symbol,
-                }
-                b += 1
-                review_list.append(article)
+                if len(text_removed_symbol) > 1:
+                    article = {
+                        "label": row[0],
+                        "text": text_removed_symbol,
+                    }
+                    b += 1
+                    review_list.append(article) 
             elif row[0] == "5つ星のうち1.0":
                 row[0] = "ネガ"
                 normalized_text = neologdn.normalize(row[1])
@@ -75,12 +76,13 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                article = {
-                "label": row[0],
-                "text": text_removed_symbol,
-                }
-                b += 1
-                review_list.append(article)
+                if len(text_removed_symbol) > 1:
+                    article = {
+                        "label": row[0],
+                        "text": text_removed_symbol,
+                    }
+                    b += 1
+                    review_list.append(article) 
 
         csv_file.close()
     
