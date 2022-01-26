@@ -9,10 +9,11 @@ import resultData
 import amazon_selection
 import amazonAIt
 import repository
+import sakura_jadgement
 
 
 # ロボット扱いにされてない場合、使う
-testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC-%E3%83%9E%E3%83%AA%E3%82%AA%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3-Switch/dp/B07DPDDP5V/ref=pd_sbs_3/356-0976207-0608456?pd_rd_w=VK50K&pf_rd_p=133595aa-365a-4ded-92cd-226dcfd5ea4f&pf_rd_r=TWF2FTF3DDCBJSTB9RFC&pd_rd_r=4d37ec4a-17d3-4ffd-88ba-bd5668667080&pd_rd_wg=lAQH4&pd_rd_i=B07DPDDP5V&psc=1"
+testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E6%98%9F%E3%81%AE%E3%82%AB%E3%83%BC%E3%83%93%E3%82%A3-%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%A2%E3%83%A9%E3%82%A4%E3%82%BA-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B078WSK6JZ/ref=pd_sim_7/356-0976207-0608456?pd_rd_w=QKGmR&pf_rd_p=378811f3-db9f-49b2-8155-00fc6cf335a2&pf_rd_r=NSBFHGCP340R3SJDDSR7&pd_rd_r=d5c718f0-e421-45a8-aed9-d15bd1ba17eb&pd_rd_wg=yR5VW&pd_rd_i=B078WSK6JZ&th=1"
 # testurl = "https://www.amazon.co.jp/%E3%83%9E%E3%83%AA%E3%82%AA-%E3%82%BD%E3%83%8B%E3%83%83%E3%82%AF-%E6%9D%B1%E4%BA%AC2020%E3%82%AA%E3%83%AA%E3%83%B3%E3%83%94%E3%83%83%E3%82%AF-%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%97%E3%83%A9%E3%82%A4%E3%82%B9-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B09MZ6YQG5/ref=sr_1_6?crid=64D3261VWMSR&keywords=%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%A2%E3%83%B3%E3%83%89%E3%82%BD%E3%83%8B%E3%83%83%E3%82%AF&qid=1640050427&s=videogames&sprefix=%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%A2%E3%83%B3%E3%83%89%2Cvideogames%2C399&sr=1-6"
 
 # 商品のジャンル判定
@@ -93,10 +94,10 @@ def reviewSelection(url):
         return selection
     
     # サクラ判定
-    
+    not_sakura_review = sakura_jadgement.judge(all_review)
     
     #レビューのポジネガ判定とその分析を行う
-    resultReview = analysischoise(overview["o_category"],all_review)
+    resultReview = analysischoise(overview["o_category"],not_sakura_review)
     resultTimer.append(time.perf_counter())
 
     # 処理結果を処理結果クラスに挿入する
@@ -119,17 +120,17 @@ def reviewSelection(url):
 #テスト用受け渡し※後に消せ
 if __name__ == '__main__':
     selection = reviewSelection(testurl)
-    print(selection.img)
-    print(selection.name)
-    print(selection.url)
-    for i in range(len(selection.positive)):
-        print(selection.posititle[i])
-        print(selection.positive[i])
-        print(selection.negatitle[i])
-        print(selection.negative[i])
+    # print(selection.img)
+    # print(selection.name)
+    # print(selection.url)
+    # for i in range(len(selection.positive)):
+    #     print(selection.posititle[i])
+    #     print(selection.positive[i])
+    #     print(selection.negatitle[i])
+    #     print(selection.negative[i])
     
-    print(selection.posiReviewRatio)
-    print(selection.negaReviewRatio)
-    print(selection.totalcount)
-    print(selection.posicount)
-    print(selection.negacount)
+    # print(selection.posiReviewRatio)
+    # print(selection.negaReviewRatio)
+    # print(selection.totalcount)
+    # print(selection.posicount)
+    # print(selection.negacount)
