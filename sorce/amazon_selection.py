@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 import datetime
 import pandas as pd 
 import re
+None
 
 #windows(chromedriver.exeのパスを設定)※要変更
 chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
@@ -60,9 +61,22 @@ def get_product_overview(url):
     image = amazon_bs.select('#main-image-container > ul > li.image.item.itemNo0.maintain-height.selected > span > span > div > img')
     image = image[0].attrs['src']
     
+    
     # 商品のカテゴリー
-    category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
-    category = category.text.replace("\n", "").replace("\u3000", "").strip()
+    category = []
+    category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(7) > span > a'))
+    category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a'))
+    category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(3) > span > a'))
+    category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(1) > span > a'))
+    
+    
+    # パンくずリストを取得できたかどうか確認
+    for i in range(len(category)):
+        if category[i] != None:
+            category[i]= category[i].text.replace("\n", "").replace("\u3000", "").strip()
+        else:
+            category[i] = ''
+    
 
     # 商品の全レビューURL
     all_review_page = amazon_bs.select_one('#reviews-medley-footer > div.a-row.a-spacing-medium a')
@@ -185,4 +199,3 @@ def get_all_reviews(url):
         else:               # 次のページが存在しない場合は処理を終了
             break
     return review_list
-
