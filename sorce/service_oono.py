@@ -14,7 +14,7 @@ import sqlite3
 # testurl = "z:/UserProfile/s20193085/Desktop/data/check/Amazon.co.jp_ スーパーマリオ 3Dワールド + フューリーワールド_オンラインコード版 _ ゲーム.html"
 # ロボット扱いにされてない場合、使う
 # testurl = "https://www.amazon.co.jp/TCL-%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88%E3%83%86%E3%83%AC%E3%83%93-32S516E-%E5%A4%96%E4%BB%98%E3%81%91HDD%E3%81%A7%E8%A3%8F%E7%95%AA%E7%B5%84%E9%8C%B2%E7%94%BB%E5%AF%BE%E5%BF%9C-2021%E5%B9%B4%E3%83%A2%E3%83%87%E3%83%AB/dp/B09HQK5PRD/ref=sr_1_1_sspa?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&crid=2Y7ZGOOKYNRBP&dchild=1&keywords=%E3%83%86%E3%83%AC%E3%83%93&qid=1635483159&sprefix=%E3%83%86%E3%83%AC%E3%83%93%2Caps%2C227&sr=8-1-spons&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzMzRKQkw5RUZLWjVQJmVuY3J5cHRlZElkPUEwMzMyMzM1MzVDR0ZMVEZIV1RFTiZlbmNyeXB0ZWRBZElkPUEzMTBUMkFSMjU5WDE0JndpZGdldE5hbWU9c3BfYXRmJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ&th=1"
-testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%AA%E3%82%AA%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3-%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC%E3%82%B9%E3%82%BF%E3%83%BC%E3%82%BA-Switch/dp/B097BL85Y7/ref=lp_5121199051_1_4?th=1"
+testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%82%84%E3%82%8F%E3%82%89%E3%81%8B%E3%81%82%E3%81%9F%E3%81%BE%E5%A1%BE-%E3%81%84%E3%81%A3%E3%81%97%E3%82%87%E3%81%AB%E3%81%82%E3%81%9F%E3%81%BE%E3%81%AE%E3%82%B9%E3%83%88%E3%83%AC%E3%83%83%E3%83%81-Switch/dp/B07C21KWQM/ref=sr_1_16?qid=1643246911&s=videogames&sr=1-16"
 
 # 商品のジャンル次第で分析するファイルを選ぶ
 def analysischoise(category,allreview):
