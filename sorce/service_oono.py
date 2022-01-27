@@ -6,7 +6,8 @@ import time
 
 import resultData
 import amazon_selection_oono
-import amazonAIt_oono
+import gamesoftAI
+import kuutyoukadenAI
 import sqlite3
 
 # ロボット扱いにされた場合、使う
@@ -19,7 +20,7 @@ testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%83%9E%E3%83%
 def analysischoise(category,allreview):
     resultReview = ""
     if(category == "ゲームソフト"):
-        resultReview = amazonAIt_oono.analysisreview(allreview) 
+        resultReview = gamesoftAI.analysisreview(allreview) 
     
     else:
         resultReview = None

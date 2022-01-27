@@ -48,7 +48,7 @@ def get_pn_scores(tokens, pn_dic):
 def load_pn_dict():
     dic = {}
     
-    with codecs.open(r'Z:\UserProfile\s20192087\Desktop\Tem\Graaaasses.VSCode\review_weightP.txt', 'r', 'UTF-8') as f:
+    with codecs.open(r'Z:\UserProfile\s20192087\Desktop\Tem\Graaaasses.VSCode\review_weight1.txt', 'r', 'UTF-8') as f:
         lines = f.readlines()
         i = 0
         for line in lines:
@@ -85,85 +85,79 @@ class NumericReplaceFilter(TokenFilter):
                         tmp = token
 
 def analysisreview(amazonreview):
-    try:
-        choise = {}
-        # CorpusElementのリスト
-        naive_corpus = []
+    choise = {}
+    # CorpusElementのリスト
+    naive_corpus = []
+    
+    # 前処理
+    char_filters = [
+        RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
+        RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', ''),
+        RegexReplaceCharFilter('おもしろい', '面白い'),
+        RegexReplaceCharFilter('おもしろくない', '面白くない'),
+        RegexReplaceCharFilter('たのしい', '楽しい')]
+    # 後処理
+    token_filters = [
+        POSKeepFilter(['名詞', '動詞', '形容詞', '副詞', '助動詞']),
+        LowerCaseFilter(),
+        NumericReplaceFilter(),
+        # CompoundNounFilter(),
+        ExtractAttributeFilter("base_form")]
         
-        # 前処理
-        char_filters = [
-            RegexReplaceCharFilter("(https?:\/\/[\w\.\-/:\#\?\=\&\;\%\~\+]*)", ""),
-            RegexReplaceCharFilter('[#!:;<>{}・`.,()-=$/_\d\'"\[\]\|]+', ''),
-            RegexReplaceCharFilter('おもしろい', '面白い'),
-            RegexReplaceCharFilter('おもしろくない', '面白くない'),
-            RegexReplaceCharFilter('たのしい', '楽しい')]
-        # 後処理
-        token_filters = [
-            POSKeepFilter(['名詞', '動詞', '形容詞', '副詞', '助動詞']),
-            LowerCaseFilter(),
-            NumericReplaceFilter(),
-            # CompoundNounFilter(),
-            ExtractAttributeFilter("base_form")]
-        
-        naive_tokenizer = Tokenizer()
+    naive_tokenizer = Tokenizer()
 
-        # 一つのレビュー本文とトークンをリストに入れる
-        for text2 in amazonreview:
-            normalized_text = neologdn.normalize(text2["text"])
-            tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
-            text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-            tokens = naive_tokenizer.tokenize(text_removed_symbol)
-            element = CorpusElement(text_removed_symbol, tokens,title = text2["title"])
-            naive_corpus.append(element)
+    # 一つのレビュー本文とトークンをリストに入れる
+    for text2 in amazonreview:
+        normalized_text = neologdn.normalize(text2["text"])
+        tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
+        text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
+        tokens = naive_tokenizer.tokenize(text_removed_symbol)
+        element = CorpusElement(text_removed_symbol, tokens,title = text2["title"])
+        naive_corpus.append(element)
 
-        # 感情極性対応表のロード
-        pn_dic = load_pn_dict()
+    # 感情極性対応表のロード
+    pn_dic = load_pn_dict()
 
-        # 各文章の極性値リストを得る
-        p = 0
-        n = 0
-        for element in naive_corpus:
-            element.pn_scores = get_pn_scores(element.tokens, pn_dic)
-            ans = sum(element.pn_scores)
+    # 各文章の極性値リストを得る
+    p = 0
+    n = 0
+    for element in naive_corpus:
+        element.pn_scores = get_pn_scores(element.tokens, pn_dic)
+        ans = sum(element.pn_scores)
 
-            if ans > 0:
-                p += 1
-            else:
-                n += 1
+        if ans > 0:
+            p += 1
+        else:
+            n += 1
 
-        choise["posicnt"] = p
-        choise["negacnt"] = n
+    choise["posicnt"] = p
+    choise["negacnt"] = n
 
-        p_per = p/len(amazonreview)
-        n_per = n/len(amazonreview)
+    p_per = p/len(amazonreview)
+    n_per = n/len(amazonreview)
 
-        choise["totalposiper"] = p_per
-        choise["totalnegaper"] = n_per
+    choise["totalposiper"] = p_per
+    choise["totalnegaper"] = n_per
 
-        bestlist = []
-        worstlist = []
+    bestlist = []
+    worstlist = []
     
-        # 最も高い3件を表示
-        for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:3]:
-            best = {"title":io.StringIO(element.title).readline(),
-                    "posiper":sum(element.pn_scores),
-                    "text":io.StringIO(element.text2).readline()}
-            bestlist.append(best)
-        # Error
-        choise["positive"] = bestlist
+    # 最も高い3件を表示
+    for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores), reverse=True)[:3]:
+        best = {"title":io.StringIO(element.title).readline(),
+                "posiper":sum(element.pn_scores),
+                "text":io.StringIO(element.text2).readline()}
+        bestlist.append(best)
+    choise["positive"] = bestlist
     
 
-        # 平均値が最も低い3件を表示
-        for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:3]:
-            worst = {"title":io.StringIO(element.title).readline(),
-                    "posiper":sum(element.pn_scores),
-                    "text":io.StringIO(element.text2).readline()}
-            worstlist.append(worst)
+    # 平均値が最も低い3件を表示
+    for element in sorted(naive_corpus, key=lambda e: sum(e.pn_scores))[:3]:
+        worst = {"title":io.StringIO(element.title).readline(),
+                "posiper":sum(element.pn_scores),
+                "text":io.StringIO(element.text2).readline()}
+        worstlist.append(worst)
     
-        choise["negative"] = worstlist
-    
-    except:
-        choise = {}
-        choise = None
+    choise["negative"] = worstlist
         
     return choise
