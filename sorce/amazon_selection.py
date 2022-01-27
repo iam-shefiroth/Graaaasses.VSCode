@@ -67,7 +67,7 @@ def get_product_overview(url):
     category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a'))
     category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(3) > span > a'))
     category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(1) > span > a'))
-    
+    None
     
     # パンくずリストを取得できたかどうか確認
     for i in range(len(category)):
