@@ -11,7 +11,6 @@ import gamesoftAI
 import kuutyoukadenAI
 import repository
 import sakura_jadgement
-None
 
 
 # ロボット扱いにされてない場合、使う
