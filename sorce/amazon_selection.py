@@ -62,15 +62,20 @@ def get_product_overview(url):
     
     
     # 商品のカテゴリー
-    category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a')
+    category = []
+    category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(7) > span > a'))
+    category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(5) > span > a'))
+    category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(3) > span > a'))
+    category.append(amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-of-type(1) > span > a'))
     
-    # 深いパンくずリストを取得できたかどうか確認
-    if category == None:
-        # 一つ手前のぱんくずリストを取得する
-        category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-child(3) > span > a')
-        if category == None:
-            category = amazon_bs.select_one('#wayfinding-breadcrumbs_feature_div > ul > li:nth-child(1) > span > a')
-    category = category.text.replace("\n", "").replace("\u3000", "").strip()
+    
+    # パンくずリストを取得できたかどうか確認
+    for i in range(len(category)):
+        if category[i] != None:
+            category[i]= category[i].text.replace("\n", "").replace("\u3000", "").strip()
+        else:
+            category[i] = ''
+    
 
     # 商品の全レビューURL
     all_review_page = amazon_bs.select_one('#reviews-medley-footer > div.a-row.a-spacing-medium a')
