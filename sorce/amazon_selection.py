@@ -199,4 +199,3 @@ def get_all_reviews(url):
         else:               # 次のページが存在しない場合は処理を終了
             break
     return review_list
-
