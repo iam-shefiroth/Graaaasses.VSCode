@@ -102,7 +102,7 @@ def reviewSelection(url):
         return selection
     
     # サクラ判定
-    # not_sakura_review = sakura_jadgement.judge(all_review)
+    all_review = sakura_jadgement.judge(all_review)
     
     #レビューのポジネガ判定とその分析を行う
     # resultReview = analysischoise(overview["o_category"],not_sakura_review)
