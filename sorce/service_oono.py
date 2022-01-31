@@ -6,25 +6,36 @@ import time
 
 import resultData
 import amazon_selection_oono
-import gamesoftAI
-import kuutyoukadenAI
-import sqlite3
+import gamesoftAI_oono
+import kuutyoukadenAI_oono
+import repository
+None
 
-# ロボット扱いにされた場合、使う
-# testurl = "z:/UserProfile/s20193085/Desktop/data/check/Amazon.co.jp_ スーパーマリオ 3Dワールド + フューリーワールド_オンラインコード版 _ ゲーム.html"
+
 # ロボット扱いにされてない場合、使う
-# testurl = "https://www.amazon.co.jp/TCL-%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88%E3%83%86%E3%83%AC%E3%83%93-32S516E-%E5%A4%96%E4%BB%98%E3%81%91HDD%E3%81%A7%E8%A3%8F%E7%95%AA%E7%B5%84%E9%8C%B2%E7%94%BB%E5%AF%BE%E5%BF%9C-2021%E5%B9%B4%E3%83%A2%E3%83%87%E3%83%AB/dp/B09HQK5PRD/ref=sr_1_1_sspa?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&crid=2Y7ZGOOKYNRBP&dchild=1&keywords=%E3%83%86%E3%83%AC%E3%83%93&qid=1635483159&sprefix=%E3%83%86%E3%83%AC%E3%83%93%2Caps%2C227&sr=8-1-spons&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzMzRKQkw5RUZLWjVQJmVuY3J5cHRlZElkPUEwMzMyMzM1MzVDR0ZMVEZIV1RFTiZlbmNyeXB0ZWRBZElkPUEzMTBUMkFSMjU5WDE0JndpZGdldE5hbWU9c3BfYXRmJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ&th=1"
-testurl = "https://www.amazon.co.jp/%E4%BB%BB%E5%A4%A9%E5%A0%82-%E3%82%84%E3%82%8F%E3%82%89%E3%81%8B%E3%81%82%E3%81%9F%E3%81%BE%E5%A1%BE-%E3%81%84%E3%81%A3%E3%81%97%E3%82%87%E3%81%AB%E3%81%82%E3%81%9F%E3%81%BE%E3%81%AE%E3%82%B9%E3%83%88%E3%83%AC%E3%83%83%E3%83%81-Switch/dp/B07C21KWQM/ref=sr_1_16?qid=1643246911&s=videogames&sr=1-16"
+testurl = "https://www.amazon.co.jp/%E3%82%B7%E3%83%A3%E3%83%BC%E3%83%97-%E7%A9%BA%E6%B0%97%E6%B8%85%E6%B5%84%E6%A9%9F%E3%80%90%E5%8A%A0%E6%B9%BF%E6%A9%9F%E8%83%BD%E4%BB%98%E3%80%91%EF%BC%88%E7%A9%BA%E6%B8%8523%E7%95%B3%E3%81%BE%E3%81%A7-%E3%83%9B%E3%83%AF%E3%82%A4%E3%83%88%E7%B3%BB%EF%BC%89SHARP-%E3%80%8C%E3%83%97%E3%83%A9%E3%82%BA%E3%83%9E%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%83%BC7000%E3%80%8D%E6%90%AD%E8%BC%89-KC-L50-W/dp/B07Z8PRD4W/ref=sr_1_1?pd_rd_r=6c787daa-4e8e-494c-aad3-b77016f532e6&pd_rd_w=WiR2i&pd_rd_wg=PHcd0&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=AR75ZKJY9ENZTPPHQG1Q&qid=1643243957&refinements=p_72%3A82417051&s=kitchen&sr=1-1&th=1"
+# testurl = "https://www.amazon.co.jp/%E3%83%9E%E3%83%AA%E3%82%AA-%E3%82%BD%E3%83%8B%E3%83%83%E3%82%AF-%E6%9D%B1%E4%BA%AC2020%E3%82%AA%E3%83%AA%E3%83%B3%E3%83%94%E3%83%83%E3%82%AF-%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%97%E3%83%A9%E3%82%A4%E3%82%B9-%E3%82%AA%E3%83%B3%E3%83%A9%E3%82%A4%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89%E7%89%88/dp/B09MZ6YQG5/ref=sr_1_6?crid=64D3261VWMSR&keywords=%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%A2%E3%83%B3%E3%83%89%E3%82%BD%E3%83%8B%E3%83%83%E3%82%AF&qid=1640050427&s=videogames&sprefix=%E3%83%9E%E3%83%AA%E3%82%AA%E3%82%A2%E3%83%B3%E3%83%89%2Cvideogames%2C399&sr=1-6"
+
+# 商品のジャンル判定
+def categorycheck(category):
+    check = 'NO'
+    for category_one in category:
+        if category_one == "ゲームソフト":
+            check = 'ゲームソフト'
+            break
+        elif category_one == '空調・季節家電':
+            check = '空調・季節家電'
+            break
+    
+    return check
 
 # 商品のジャンル次第で分析するファイルを選ぶ
 def analysischoise(category,allreview):
     resultReview = ""
     if(category == "ゲームソフト"):
-        resultReview = gamesoftAI.analysisreview(allreview) 
-    
-    else:
-        resultReview = None
-        
+        resultReview = gamesoftAI_oono.analysisreview(allreview)
+    elif category == "空調・季節家電":
+        resultReview = kuutyoukadenAI_oono.analysisreview(allreview)
     return resultReview
 
 # 格納されてるレビュー結果をデータクラスに入れる
@@ -48,7 +59,7 @@ def resultTime(resultTimer):
 def reviewSelection(url):
     selectionInfo = []
     
-    # 処理速度を計る
+    # 処理速度を計る（後に消します）
     resultTimer = []
     resultTimer.append(time.perf_counter())
     
@@ -59,6 +70,12 @@ def reviewSelection(url):
     # スクレイピング成功したかどうか確認
     if(overview["o_title"] == "!Not Scraping!"):
         selection = resultData.ResultData(err = overview["o_category"])
+        return selection
+    
+    # 現在対応してるカテゴリーかどうか確認する
+    judge = categorycheck(overview["o_category"])
+    if judge == "NO":
+        selection = resultData.ResultData(err = "この商品のジャンルは現在対応しておりません")
         return selection
     
     #レビューのスクレイピングを取得する
@@ -82,16 +99,13 @@ def reviewSelection(url):
         selection = resultData.ResultData(err = "レビュー数が少ないため分析出来ません")
         return selection
     
-    # サクラレビューチェック
+    # サクラ判定
+    # not_sakura_review = sakura_jadgement.judge(all_review)
     
     #レビューのポジネガ判定とその分析を行う
-    resultReview = analysischoise(overview["o_category"],all_review)
+    # resultReview = analysischoise(overview["o_category"],not_sakura_review)
+    resultReview = analysischoise(judge,all_review)
     resultTimer.append(time.perf_counter())
-    
-    # うまく処理されてないか確認
-    if(resultReview == None):
-        selection = resultData.ResultData(err = "この商品のジャンルは現在対応しておりません")
-        return selection
 
     # 処理結果を処理結果クラスに挿入する
     # 商品概要の取得結果をデータクラスに挿入する
@@ -104,58 +118,26 @@ def reviewSelection(url):
     # ポジネガ判定の比率をデータクラスに挿入する
     selectionInfo.reviewRatio(resultReview["totalposiper"],resultReview["totalnegaper"])
     
+    # Amazonreview情報をDBに書き込む
+    repository.insertdb(selectionInfo)
+    
     resultTime(resultTimer)
     return selectionInfo
 
 #テスト用受け渡し※後に消せ
 if __name__ == '__main__':
-    temurl = ''
-    db = sqlite3.connect("kekka.db")
+    selection = reviewSelection(testurl)
+    # print(selection.img)
+    # print(selection.name)
+    # print(selection.url)
+    # for i in range(len(selection.positive)):
+    #     print(selection.posititle[i])
+    #     print(selection.positive[i])
+    #     print(selection.negatitle[i])
+    #     print(selection.negative[i])
     
-    sql = 'SELECT amazon_url FROM kekka WHERE amazon_url = ?'
-    cur = db.execute(sql,(testurl,))
-    data = cur.fetchall()
-    if len(data) != 0:
-        temurl = ''.join(data[0])
-    db.close()
-
-    if testurl != temurl:
-        selection = reviewSelection(testurl)
-        print(selection.img)
-        print(selection.name)
-        print(selection.url)
-        for i in range(len(selection.positive)):
-            print("ポジティブ度{0}位".format(i+1),selection.posititle[i])
-            print(selection.positive[i])
-            print("**"*50)
-            print("ネガティブ度{0}位".format(i+1),selection.negatitle[i])
-            print(selection.negative[i])
-            print("**"*50)
-        print(selection.posiReviewRatio)
-        print(selection.negaReviewRatio)
-        print(selection.totalcount)
-        print(selection.posicount)
-        print(selection.negacount)
-        
-        db = sqlite3.connect(
-            "kekka.db",              #ファイル名
-            isolation_level=None)
-    
-        sql1 = 'CREATE TABLE IF NOT EXISTS kekka (amazon_url TEXT primary key,product_name TEXT, img TEXT,positaitle1 TEXT,positive1 TEXT,positaitle2 TEXT,positive2 TEXT,positaitle3 TEXT,positive3 TEXT,negataitle1 TEXT,negative1 TEXT,negataitle2 TEXT,negative2 TEXT,negataitle3 TEXT,negative3 TEXT,posicount INTEGER,negacount INTEGER)'
-        db.execute(sql1)
-    
-        sql2 = 'INSERT INTO kekka(amazon_url,product_name, img,positaitle1,positive1,positaitle2,positive2,positaitle3,positive3,negataitle1,negative1,negataitle2,negative2,negataitle3,negative3,posicount,negacount) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-        data = (testurl,selection.name,selection.img,selection.posititle[0],selection.positive[0],selection.posititle[1],selection.positive[1],selection.posititle[2],selection.positive[2],selection.negatitle[0],selection.negative[0],selection.negatitle[1],selection.negative[1],selection.negatitle[2],selection.negative[2],selection.posicount,selection.negacount)
-        db.commit()
-        db.execute(sql2,data)     #sql文を実行
-        db.close()          #データベースを閉じる
-    else:
-        db = sqlite3.connect("kekka.db")
-        sql = 'SELECT * FROM kekka WHERE amazon_url = ?'
-        cur = db.execute(sql,(temurl,))
-        kekka = cur.fetchall()
-        
-        for data in kekka[0]:
-            print(data)
-            print('**'*50)
-        db.close()
+    # print(selection.posiReviewRatio)
+    # print(selection.negaReviewRatio)
+    # print(selection.totalcount)
+    # print(selection.posicount)
+    # print(selection.negacount)
