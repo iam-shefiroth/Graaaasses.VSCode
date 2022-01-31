@@ -4,7 +4,11 @@ import torch.nn.functional as F
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 from transformers import BertJapaneseTokenizer, BertForSequenceClassification
-import csv
+import urllib.request
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+res = urllib.request.urlopen("https://huggingface.co/cl-tohoku/bert-base-japanese-whole-word-masking")
+
 
 # サクラレビューか判定する
 # 使用時はAnacondaのプロンプトにて「install transformers==4.10.2 fugashi==1.1.0 ipadic==1.0.0 pytorch-lightning==1.2.7」を入力してください
