@@ -4,9 +4,10 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import textwrap
 import csv
- 
+import chromedriver_binary
+
 #windows(chromedriver.exeのパスを設定)
-chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
+# chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
  
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
@@ -18,7 +19,7 @@ def get_amazon_page_info(url):
     options.add_argument('--incognito')     #　シークレットモードの設定を付与
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=chrome_path,options=options)
+    driver = webdriver.Chrome(options=options)
     driver.get(url)                         #　chromeブラウザでurlを開く
     driver.implicitly_wait(10)              #　指定したドライバの要素が見つかるまでの待ち時間を設定
     text = driver.page_source               #　ページ情報を取得
@@ -111,8 +112,8 @@ if __name__ == '__main__':
     # urls.append('https://www.amazon.co.jp/%E3%82%A2%E3%82%A4%E3%83%AA%E3%82%B9%E3%82%AA%E3%83%BC%E3%83%A4%E3%83%9E-%E3%82%B5%E3%83%BC%E3%82%AD%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%BF%E3%83%BC-%E3%83%9E%E3%83%83%E3%83%88%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3-%E3%83%91%E3%83%AF%E3%83%95%E3%83%AB%E9%80%81%E9%A2%A8-PCF-MKM15-H/dp/B08Z3C8HQC/ref=sr_1_9?pd_rd_r=798fefc2-b4fa-4e69-b785-15ffcff78a1f&pd_rd_w=da37O&pd_rd_wg=ZYILg&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=P3QMP7NMB2BD7YSXJ6AH&qid=1643072846&refinements=p_72%3A82417051&s=kitchen&sr=1-9')
     
     # ヘッドホン
-    urls.append('https://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC-SONY-MDR7506-%E3%82%B9%E3%83%86%E3%83%AC%E3%82%AA%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-MDR-7506/dp/B000AJIF4E/ref=sr_1_17?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247563&refinements=p_72%3A82399051&s=electronics&sr=1-17')
-    # urls.append('https://www.amazon.co.jp/%E3%83%9E%E3%83%BC%E3%82%B7%E3%83%A3%E3%83%AB-Marshall-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-MAJOR-BLUETOOTH/dp/B07CDZD8B7/ref=sr_1_27?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247776&refinements=p_72%3A82399051&s=electronics&sr=1-27')
+    # urls.append('https://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC-SONY-MDR7506-%E3%82%B9%E3%83%86%E3%83%AC%E3%82%AA%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-MDR-7506/dp/B000AJIF4E/ref=sr_1_17?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247563&refinements=p_72%3A82399051&s=electronics&sr=1-17')
+    urls.append('https://www.amazon.co.jp/%E3%83%9E%E3%83%BC%E3%82%B7%E3%83%A3%E3%83%AB-Marshall-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-MAJOR-BLUETOOTH/dp/B07CDZD8B7/ref=sr_1_27?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247776&refinements=p_72%3A82399051&s=electronics&sr=1-27')
     # urls.append('https://www.amazon.co.jp/%E3%83%8E%E3%82%A4%E3%82%BA%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AA%E3%83%B3%E3%82%B0-Bluetooth-%E8%87%AA%E5%8B%95%E3%83%9A%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0-ANC%E3%83%8E%E3%82%A4%E3%82%BA%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AB-Srhythm/dp/B083S6Q8VK/ref=sr_1_29?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247776&refinements=p_72%3A82399051&s=electronics&sr=1-29&th=1')
     
     # 次のやつ
