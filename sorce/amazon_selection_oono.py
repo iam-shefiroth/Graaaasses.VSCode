@@ -5,10 +5,11 @@ from selenium.webdriver.chrome.options import Options
 import datetime
 import pandas as pd 
 import re
+import chromedriver_binary
 None
 
 #windows(chromedriver.exeのパスを設定)※要変更
-chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
+# chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
 # chrome_path = "z:\\UserProfile\s20192060\Desktop\AI開発\chromedriver.exe"
 #mac
 #chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
@@ -23,7 +24,7 @@ def get_amazon_page_info(url):
     options.add_argument('--incognito')     #　シークレットモードの設定を付与
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=chrome_path,options=options)
+    driver = webdriver.Chrome(options=options)
     # スクレイピングブロック対策として、関係ないサイト且つ容量が少ないサイトを開く
     driver.get("https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=201909000")
     driver.get(url)                         #　chromeブラウザでurlを開く
@@ -100,7 +101,7 @@ def getOriginDate(url):
     options.add_argument('--incognito')     #　シークレットモードの設定を付与
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=chrome_path,options=options)
+    driver = webdriver.Chrome(options=options)
     driver.get(url)                         #　chromeブラウザでurlを開く
     driver.implicitly_wait(3)
     try:
