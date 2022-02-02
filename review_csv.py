@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import textwrap
 import csv
 import chromedriver_binary
-
+import random
 #windows(chromedriver.exeのパスを設定)
 # chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
  
@@ -56,7 +56,8 @@ def get_all_reviews(url):
             next_url = 'https://www.amazon.co.jp/' + next_page[0].attrs['href']    
             url = next_url  # 次のページのURLをセットする
 
-            sleep(3)        # 最低でも1秒は間隔をあける(サーバへ負担がかからないようにする)
+            a = random.randint(1,4)
+            sleep(a)        # 最低でも1秒は間隔をあける(サーバへ負担がかからないようにする)
         else:               # 次のページが存在しない場合は処理を終了
             break
  
@@ -113,7 +114,7 @@ if __name__ == '__main__':
     
     # ヘッドホン
     # urls.append('https://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC-SONY-MDR7506-%E3%82%B9%E3%83%86%E3%83%AC%E3%82%AA%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-MDR-7506/dp/B000AJIF4E/ref=sr_1_17?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247563&refinements=p_72%3A82399051&s=electronics&sr=1-17')
-    urls.append('https://www.amazon.co.jp/%E3%83%9E%E3%83%BC%E3%82%B7%E3%83%A3%E3%83%AB-Marshall-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-MAJOR-BLUETOOTH/dp/B07CDZD8B7/ref=sr_1_27?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247776&refinements=p_72%3A82399051&s=electronics&sr=1-27')
+    urls.append('https://www.amazon.co.jp/%E3%80%902000ml%EF%BC%86%E5%BC%B7%E5%8A%9B%E9%99%A4%E6%B9%BF%EF%BC%86PSE%E8%AA%8D%E8%A8%BC%E6%B8%88%E3%80%91%E9%99%A4%E6%B9%BF%E6%A9%9F-%E3%82%B3%E3%83%B3%E3%83%91%E3%82%AF%E3%83%88-%E8%87%AA%E5%8B%95%E5%81%9C%E6%AD%A2%E6%A9%9F%E8%83%BD%E6%90%AD%E8%BC%89-Hysure-T8PLUS-%E3%83%96%E3%83%A9%E3%83%83%E3%82%AF%E2%80%A6/dp/B08WWRCFNR/ref=sr_1_11?pd_rd_r=c0689dc8-8ce4-4efb-8839-943c20cbd9b0&pd_rd_w=KnQZ8&pd_rd_wg=cfa7Y&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=T12CTE7Z6TWBD8NF2M42&qid=1643682947&refinements=p_72%3A82417051&s=kitchen&sr=1-11')
     # urls.append('https://www.amazon.co.jp/%E3%83%8E%E3%82%A4%E3%82%BA%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AA%E3%83%B3%E3%82%B0-Bluetooth-%E8%87%AA%E5%8B%95%E3%83%9A%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0-ANC%E3%83%8E%E3%82%A4%E3%82%BA%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AB-Srhythm/dp/B083S6Q8VK/ref=sr_1_29?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247776&refinements=p_72%3A82399051&s=electronics&sr=1-29&th=1')
     
     # 次のやつ
