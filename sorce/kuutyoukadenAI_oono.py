@@ -18,6 +18,7 @@ import numpy as np
 import io
 import re
 import neologdn
+import sqlite3
 np.seterr(divide='ignore') 
  
 #mac
@@ -46,19 +47,11 @@ def get_pn_scores(tokens, pn_dic):
 def load_pn_dict():
     dic = {}
     
-    with codecs.open(r'Z:\UserProfile\s20192087\Desktop\Tem\Graaaasses.VSCode\review_weight2.txt', 'r', 'UTF-8') as f:
-        lines = f.readlines()
-        i = 0
-        for line in lines:
-            # 各行は"良い:よい:形容詞:0.999995"
-             # 先頭2行は不要なメタ情報のため、削除
-            
-            columns = line.split(',')
-            
-            s = columns[1].replace(" \r\n","")
-            dic[columns[0]] = float(s)
-            i = i + 1
-            
+    con = sqlite3.connect('kekka.db')
+    cur=con.cursor()
+    for data in cur.execute("select * from kuutyoukaden_weight"):
+        dic[data[0]] = float(data[1])
+    print(dic)
     return dic
 
 class NumericReplaceFilter(TokenFilter):

@@ -18,6 +18,7 @@ import numpy as np
 import io
 import re
 import neologdn
+import sqlite3
 np.seterr(divide='ignore') 
  
 #mac
@@ -45,20 +46,11 @@ def get_pn_scores(tokens, pn_dic):
 # pn_ja.dicファイルから、単語をキー、極性値を値とする辞書を得る
 def load_pn_dict():
     dic = {}
-    
-    with codecs.open(r'Z:/UserProfile/s20193085/Desktop/AIService/Graaaasses/Graaaasses/review_weight1.txt', 'r', 'UTF-8') as f:
-        lines = f.readlines()
-        i = 0
-        for line in lines:
-            # 各行は"良い:よい:形容詞:0.999995"
-             # 先頭2行は不要なメタ情報のため、削除
-            
-            columns = line.split(',')
-            
-            s = columns[1].replace(" \r\n","")
-            dic[columns[0]] = float(s)
-            i = i + 1
-            
+    con = sqlite3.connect('kekka.db')
+    cur=con.cursor()
+    for data in cur.execute("select * from gamesoft_weight"):
+        dic[data[0]] = float(data[1])
+
     return dic
 
 class NumericReplaceFilter(TokenFilter):
