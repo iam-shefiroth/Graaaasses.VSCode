@@ -101,7 +101,7 @@ def getOriginDate(url):
     options.add_argument('--incognito')     #　シークレットモードの設定を付与
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
-    driver = webdriver.Chrome(executable_path=chrome_path,options=options)
+    driver = webdriver.Chrome(options=options)
     driver.get(url)                         #　chromeブラウザでurlを開く
     driver.implicitly_wait(3)
     try:
