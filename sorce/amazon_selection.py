@@ -6,7 +6,7 @@ import datetime
 import pandas as pd 
 import chromedriver_binary
 import re
-None
+
 
 #windows(chromedriver.exeのパスを設定)※要変更
 # chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
