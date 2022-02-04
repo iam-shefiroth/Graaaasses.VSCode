@@ -12,19 +12,27 @@
     
     </head>
     <body>
+
         <div style="margin-left: 10%; margin-right: 10%; margin-top: 10%; text-align: center;">
             <h3>結果の表示には数分～数十分かかります</h3>
             <h3>処理を実行しますか？</h3>
             <form action="/search_advance" method="POST" id="judge">
                 <input type="hidden" name="searchUrl" value={{url}}>
-                <button type="submit" name="judge" value="YES" class="btn btn-outline-primary" id="yes">はい</button>
-                <button type="submit" name="judge" value="NO" class="btn btn-outline-danger" id="no">いいえ</button>
+                <button type="submit" name="judge" value="YES" class="btn btn-outline-primary">はい</button>
+                <button type="submit" name="judge" value="NO" class="btn btn-outline-danger">いいえ</button>
             </form>
+        </div>
+        <div id="fadeLayer"></div>
+
+        <div id="loading">
+            <div class="spinner"></div>
         </div>
     <script>
         document.getElementById('judge').onsubmit = function() {
-            const form = document.getElementById("judge");
-            form.classList.add("not-controll");
+            var target = document.getElementById("fadeLayer");
+            var loading = document.getElementById("loading");
+            target.style.visibility = "visible";
+            loading.style.visibility = "visible";
         }
         
     </script>
