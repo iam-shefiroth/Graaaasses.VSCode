@@ -4,7 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import datetime
 import pandas as pd 
-import chromedriver_binary
+# import chromedriver_binary
+from webdriver_manager.chrome import ChromeDriverManager
 import re
 
 
@@ -24,7 +25,8 @@ def get_amazon_page_info(url):
     options.add_argument('--incognito')     #　シークレットモードの設定を付与
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options)
+    # driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     # スクレイピングブロック対策として、関係ないサイト且つ容量が少ないサイトを開く
     driver.get("https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=201909000")
     driver.get(url)                         #　chromeブラウザでurlを開く
@@ -101,7 +103,7 @@ def getOriginDate(url):
     options.add_argument('--incognito')     #　シークレットモードの設定を付与
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get(url)                         #　chromeブラウザでurlを開く
     driver.implicitly_wait(3)
     try:
