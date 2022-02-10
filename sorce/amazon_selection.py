@@ -170,7 +170,8 @@ def get_all_reviews(url):
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
         stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')    # ページ内の全評価数を取得
         spandate  = amazon_bs.select('span.review-date') # ページ内の全レビュー日を取得
-        
+
+       
         if stars != []:
             for j in range(len(stars)):
                 # origin_dateから日数を取得したかどうか確認
