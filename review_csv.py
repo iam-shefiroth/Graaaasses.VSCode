@@ -40,12 +40,15 @@ def get_all_reviews(url):
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
         stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')
         
-        for j in range(len(stars)):
-            article = {
-            "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
-            "label": stars[j].text,
-            }
-            review_list.append(article)                      #　レビュー情報をreview_listに格納
+        if stars != []:
+            for j in range(len(stars)):
+                article = {
+                    "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
+                    "label": stars[j].text,
+                }
+                review_list.append(article)                      #　レビュー情報をreview_listに格納
+        else:
+            break
 
              
         next_page = amazon_bs.select('li.a-last a')         # 「次へ」ボタンの遷移先取得
@@ -55,9 +58,9 @@ def get_all_reviews(url):
             # 次のページのURLを生成   
             next_url = 'https://www.amazon.co.jp/' + next_page[0].attrs['href']    
             url = next_url  # 次のページのURLをセットする
+            # a = random.randint(1,4)
+            sleep(3)        # 最低でも1秒は間隔をあける(サーバへ負担がかからないようにする)
 
-            a = random.randint(1,4)
-            sleep(a)        # 最低でも1秒は間隔をあける(サーバへ負担がかからないようにする)
         else:               # 次のページが存在しない場合は処理を終了
             break
  
@@ -114,7 +117,7 @@ if __name__ == '__main__':
     
     # ヘッドホン
     # urls.append('https://www.amazon.co.jp/%E3%82%BD%E3%83%8B%E3%83%BC-SONY-MDR7506-%E3%82%B9%E3%83%86%E3%83%AC%E3%82%AA%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-MDR-7506/dp/B000AJIF4E/ref=sr_1_17?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247563&refinements=p_72%3A82399051&s=electronics&sr=1-17')
-    urls.append('https://www.amazon.co.jp/%E3%80%902000ml%EF%BC%86%E5%BC%B7%E5%8A%9B%E9%99%A4%E6%B9%BF%EF%BC%86PSE%E8%AA%8D%E8%A8%BC%E6%B8%88%E3%80%91%E9%99%A4%E6%B9%BF%E6%A9%9F-%E3%82%B3%E3%83%B3%E3%83%91%E3%82%AF%E3%83%88-%E8%87%AA%E5%8B%95%E5%81%9C%E6%AD%A2%E6%A9%9F%E8%83%BD%E6%90%AD%E8%BC%89-Hysure-T8PLUS-%E3%83%96%E3%83%A9%E3%83%83%E3%82%AF%E2%80%A6/dp/B08WWRCFNR/ref=sr_1_11?pd_rd_r=c0689dc8-8ce4-4efb-8839-943c20cbd9b0&pd_rd_w=KnQZ8&pd_rd_wg=cfa7Y&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=T12CTE7Z6TWBD8NF2M42&qid=1643682947&refinements=p_72%3A82417051&s=kitchen&sr=1-11')
+    urls.append('https://www.amazon.co.jp/Hbada-%E3%82%B2%E3%83%BC%E3%83%9F%E3%83%B3%E3%82%B0%E3%83%81%E3%82%A7%E3%82%A2-%E8%80%90%E8%8D%B7%E9%87%8D150kg%E9%9D%99%E9%9F%B3%E3%82%AD%E3%83%A3%E3%82%B9%E3%82%BF%E3%83%BC-%E3%83%A9%E3%83%B3%E3%83%90%E3%83%BC%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88-%E6%98%87%E9%99%8D%E3%82%A2%E3%83%BC%E3%83%A0%E3%83%AC%E3%82%B9%E3%83%88/dp/B082KRH3DF/ref=cm_cr_arp_d_product_top?ie=UTF8')
     # urls.append('https://www.amazon.co.jp/%E3%83%8E%E3%82%A4%E3%82%BA%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AA%E3%83%B3%E3%82%B0-Bluetooth-%E8%87%AA%E5%8B%95%E3%83%9A%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0-ANC%E3%83%8E%E3%82%A4%E3%82%BA%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AB-Srhythm/dp/B083S6Q8VK/ref=sr_1_29?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643247776&refinements=p_72%3A82399051&s=electronics&sr=1-29&th=1')
     
     # 次のやつ
@@ -124,7 +127,7 @@ if __name__ == '__main__':
     # urls.append('https://www.amazon.co.jp/Soundcore-Q10%EF%BC%88Bluetooth-%E3%82%AA%E3%83%BC%E3%83%90%E3%83%BC%E3%82%A4%E3%83%A4%E3%83%BC%E5%9E%8B%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3%EF%BC%89%E3%80%90%E3%83%8F%E3%82%A4%E3%83%AC%E3%82%BE%E5%AF%BE%E5%BF%9C-%E6%9C%80%E5%A4%A760%E6%99%82%E9%96%93%E9%9F%B3%E6%A5%BD%E5%86%8D%E7%94%9F-USB-C%E5%85%85%E9%9B%BB/dp/B07WYYJNKX/ref=sr_1_6?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643248128&refinements=p_72%3A82399051&s=electronics&sr=1-6')
     # urls.append('https://www.amazon.co.jp/OneOdio-Bluetooth-%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%BC%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-FuSion-A7/dp/B07RY1ZSJ6/ref=sr_1_10?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643248128&refinements=p_72%3A82399051&s=electronics&sr=1-10')
     # urls.append('https://www.amazon.co.jp/Bluetooth-%E3%82%AA%E3%83%BC%E3%83%90%E3%83%BC%E3%82%A4%E3%83%A4%E3%83%BC%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3-%E3%83%96%E3%83%AB%E3%83%BC%E3%83%88%E3%82%A5%E3%83%BC%E3%82%B9-%E3%83%8E%E3%82%A4%E3%82%BA%E3%82%AD%E3%83%A3%E3%83%B3%E3%82%BB%E3%83%AA%E3%83%B3%E3%82%B0-%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AC%E3%82%B9%E3%83%98%E3%83%83%E3%83%89%E3%83%9B%E3%83%B3/dp/B09DFYJVQ3/ref=sr_1_20?pd_rd_r=4c84a560-c861-4fe6-870f-130616032645&pd_rd_w=01HXr&pd_rd_wg=oXvch&pf_rd_p=ba2a089a-90bd-4698-833b-549e0f2fbdf4&pf_rd_r=39Z355X5X3XGJ8PW72JB&qid=1643248128&refinements=p_72%3A82399051&s=electronics&sr=1-20')
-    for k, url in enumerate(urls, start=12):
+    for k, url in enumerate(urls, start=18):
         review_list = []
         review_url = url.replace('dp', 'product-reviews')
         review_list = get_all_reviews(review_url)
@@ -132,7 +135,7 @@ if __name__ == '__main__':
         b = 0
             
         #CSVにレビュー情報の書き出し
-        with open(r'z:\UserProfile\s20192087\Desktop\etc\iyahon{0}.csv'.format(k),'w', encoding='CP932', errors='ignore') as f:
+        with open(r'z:\UserProfile\s20192087\Desktop\etc\chair{0}.csv'.format(k),'w', encoding='CP932', errors='ignore') as f:
             writer = csv.writer(f, lineterminator='\n')
             # 全データを表示
             for review in review_list:

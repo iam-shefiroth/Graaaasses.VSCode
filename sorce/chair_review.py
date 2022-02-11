@@ -20,8 +20,8 @@ if __name__ == '__main__':
      
     #　Amzon商品ページ
     review_list = []
-    for i in range(10):
-        csv_file = open(r'z:\UserProfile\s20192087\Desktop\etc\iyahon{0}.csv'.format(i), "r", encoding="ms932", errors="", newline="" )
+    for i in range(19):
+        csv_file = open(r'z:\UserProfile\s20192087\Desktop\etc\chair{0}.csv'.format(i), "r", encoding="ms932", errors="", newline="" )
         #リスト形式
         f = csv.reader(csv_file, delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
         a = 0
@@ -34,7 +34,7 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                if len(text_removed_symbol) > 150:
+                if len(text_removed_symbol) > 70:
                     article = {
                         "label": row[0],
                         "text": text_removed_symbol,
@@ -48,7 +48,7 @@ if __name__ == '__main__':
                 # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                if len(text_removed_symbol) > 150:
+                if len(text_removed_symbol) > 70:
                     article = {
                         "label": row[0],
                         "text": text_removed_symbol,

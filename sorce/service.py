@@ -9,6 +9,7 @@ import resultData
 import amazon_selection
 import gamesoftAI
 import kuutyoukadenAI
+import chairAI
 import repository
 import sakura_jadgement
 
@@ -27,6 +28,8 @@ def categorycheck(category):
             break
         elif category_one == '空調・季節家電':
             check = '空調・季節家電'
+        elif category_one == 'チェア':
+            check = 'チェア'
             break
     
     return check
@@ -38,6 +41,8 @@ def analysischoise(category,allreview):
         resultReview = gamesoftAI.analysisreview(allreview)
     elif category == "空調・季節家電":
         resultReview = kuutyoukadenAI.analysisreview(allreview)
+    elif category == "チェア":
+        resultReview = chairAI.analysisreview(allreview)
     return resultReview
 
 # 格納されてるレビュー結果をデータクラスに入れる

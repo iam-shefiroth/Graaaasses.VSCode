@@ -26,7 +26,7 @@ def get_amazon_page_info(url):
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
     # driver = webdriver.Chrome(options=options)
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
     # スクレイピングブロック対策として、関係ないサイト且つ容量が少ないサイトを開く
     driver.get("https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=201909000")
     driver.get(url)                         #　chromeブラウザでurlを開く
@@ -103,7 +103,7 @@ def getOriginDate(url):
     options.add_argument('--incognito')     #　シークレットモードの設定を付与
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
     driver.get(url)                         #　chromeブラウザでurlを開く
     driver.implicitly_wait(3)
     try:
@@ -170,28 +170,31 @@ def get_all_reviews(url):
         reviews = amazon_bs.select('.review-text')          #　ページ内の全レビューのテキストを取得
         stars  = amazon_bs.select('a.a-link-normal span.a-icon-alt')    # ページ内の全評価数を取得
         spandate  = amazon_bs.select('span.review-date') # ページ内の全レビュー日を取得
-        
-        for j in range(len(stars)):
+
+       
+        if stars != []:
+            for j in range(len(stars)):
+                # origin_dateから日数を取得したかどうか確認
+                if origin_date is None:
+                    dateResult = "未定義"
+                else:
+                    reviewDate = re.findall('2.*?日', spandate[j].text)
+                    reviewDate = datetime.datetime.strptime(reviewDate[0], '%Y年%m月%d日')
+                    dateResult = (reviewDate - origin_date).days
+                star = re.findall('[0-5].[0-5]', stars[j].text)[0]
+                starFloat = float(star)
+                article = {
+                "title":review_title[j].text.replace("\n", "").replace("\u3000", ""),
+                "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
+                "dateResult": dateResult,
+                "star": star,
+                }
+                review_list.append(article)                      #　レビュー情報をreview_listに格納
             
-            # origin_dateから日数を取得したかどうか確認
-            if origin_date is None:
-                dateResult = "未定義"
-            else:
-                reviewDate = re.findall('2.*?日', spandate[j].text)
-                reviewDate = datetime.datetime.strptime(reviewDate[0], '%Y年%m月%d日')
-                dateResult = (reviewDate - origin_date).days
-            star = re.findall('[0-5].[0-5]', stars[j].text)[0]
-            starFloat = float(star)
-            article = {
-            "title":review_title[j].text.replace("\n", "").replace("\u3000", ""),
-            "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
-            "dateResult": dateResult,
-            "star": star,
-            }
-            review_list.append(article)                      #　レビュー情報をreview_listに格納
+            next_page = amazon_bs.select('li.a-last a')         # 「次へ」ボタンの遷移先取得
         
-        next_page = amazon_bs.select('li.a-last a')         # 「次へ」ボタンの遷移先取得
-        
+        else:
+            break
         # 次のページが存在する場合
         if next_page != []: 
             # 次のページのURLを生成   
