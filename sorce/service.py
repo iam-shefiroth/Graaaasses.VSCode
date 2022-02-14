@@ -28,6 +28,7 @@ def categorycheck(category):
             break
         elif category_one == '空調・季節家電':
             check = '空調・季節家電'
+            break
         elif category_one == 'チェア':
             check = 'チェア'
             break
