@@ -12,8 +12,6 @@ import pandas
 import csv
 import re
 import neologdn
-#windows(chromedriver.exeのパスを設定)
-# chrome_path = r'z:\UserProfile\s20192087\Desktop\etc\chromedriver.exe'
 
 #インポート時は実行されないように記載
 if __name__ == '__main__':
@@ -30,11 +28,9 @@ if __name__ == '__main__':
             if row[0] == "5つ星のうち5.0":
                 row[0] = "ポジ"
                 normalized_text = neologdn.normalize(row[1])
-                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
-                # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                if len(text_removed_symbol) > 20:
+                if len(text_removed_symbol) > 10 and a < 1000:
                     article = {
                         "label": row[0],
                         "text": text_removed_symbol,
@@ -44,11 +40,9 @@ if __name__ == '__main__':
             elif row[0] == "5つ星のうち4.0":
                 row[0] = "ポジ"
                 normalized_text = neologdn.normalize(row[1])
-                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
-                # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
-                if len(text_removed_symbol) > 20:
+                if len(text_removed_symbol) > 10 and a < 1000:
                     article = {
                         "label": row[0],
                         "text": text_removed_symbol,
@@ -58,8 +52,6 @@ if __name__ == '__main__':
             elif row[0] == "5つ星のうち2.0":
                 row[0] = "ネガ"
                 normalized_text = neologdn.normalize(row[1])
-                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
-                # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 if len(text_removed_symbol) > 1:
@@ -72,8 +64,6 @@ if __name__ == '__main__':
             elif row[0] == "5つ星のうち1.0":
                 row[0] = "ネガ"
                 normalized_text = neologdn.normalize(row[1])
-                # tmp = re.sub(r'(\d)([,.])(\d+)', r'\1\3', normalized_text)
-                # text_replaced_number = re.sub(r'\d+', '0', tmp)
                 tmp = re.sub(r'[!-/:-@[-`{-~]', r' ', normalized_text)
                 text_removed_symbol = re.sub(u'[■-♯]', ' ', tmp)
                 if len(text_removed_symbol) > 1:
@@ -105,29 +95,6 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, stratify=y, random_state=0)
     # それぞれの数があっているか確認
     print([len(c) for c in [X_train, X_test, y_train, y_test]])
-
-    # tokenizer = Tokenizer(wakati=True)
-    # feature_vectorizer = CountVectorizer(binary=True, analyzer=tokenizer.tokenize)
-    # # 学習
-    # classifier = LogisticRegression()
-    # transformed_X_train = feature_vectorizer.fit_transform(X_train)
-    # classifier.fit(transformed_X_train, y_train)
-
-    # vectorized = feature_vectorizer.transform(X_test)
-    # y_pred = classifier.predict(vectorized)
-    # print(classification_report(y_test, y_pred,target_names=label_vectorizer.classes_))
-
-    # feature_to_weight = dict()
-    # for w, name in zip(classifier.coef_[0], feature_vectorizer.get_feature_names()):
-    #     feature_to_weight[name] = w
-    # se = Series(feature_to_weight)
-    # se.sort_values(ascending=False, inplace=True)
-    # print("Positive or Negative")
-    # print("--Positiveの判定に効いた素性")
-    # print(se[:20])
-    # print("--Negativeの判定に効いた素性")
-    # print(se[-20:])
-    # print("--" * 50)
 
     class NumericReplaceFilter(TokenFilter):
         def apply(self, tokens):
