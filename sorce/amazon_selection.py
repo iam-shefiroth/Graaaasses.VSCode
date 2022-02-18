@@ -182,14 +182,15 @@ def get_all_reviews(url):
                     reviewDate = datetime.datetime.strptime(reviewDate[0], '%Y年%m月%d日')
                     dateResult = (reviewDate - origin_date).days
                 star = re.findall('[0-5].[0-5]', stars[j].text)[0]
-                starFloat = float(star)
-                article = {
-                "title":review_title[j].text.replace("\n", "").replace("\u3000", ""),
-                "text": reviews[j].text.replace("\n", "").replace("\u3000", ""),
-                "dateResult": dateResult,
-                "star": star,
-                }
-                review_list.append(article)                      #　レビュー情報をreview_listに格納
+                review = reviews[j].text.replace("\n", "").replace("\u3000", "")
+                if len(review) < 1100:
+                    article = {
+                        "title":review_title[j].text.replace("\n", "").replace("\u3000", ""),
+                        "text": review,
+                        "dateResult": dateResult,
+                        "star": star,
+                    }
+                    review_list.append(article)                      #　レビュー情報をreview_listに格納
             
             next_page = amazon_bs.select('li.a-last a')         # 「次へ」ボタンの遷移先取得
         
