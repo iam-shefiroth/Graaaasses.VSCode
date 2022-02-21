@@ -23,17 +23,12 @@ def selectdb(url):
     temurl = ''
     
     url_a = re.search('[^0-9A-Z]([0-9A-Z]{10})([^0-9A-Z]|$)', url).group().replace("/","")
-    print(url_a)
     sql = 'SELECT asin_code FROM kekka WHERE asin_code = ?'
     cur = db.execute(sql,(url_a,))
     data = cur.fetchall()
-    print(data)
-    print(1)
     # sql実行結果の件数が0件ではないか確認
     if len(data) != 0:
         temurl = ''.join(data[0])
-        print(temurl)
-        print(2)
     db.close()
     
     # 入力されたurlとsql検索結果のurlが一致したかどうか確認
@@ -54,7 +49,7 @@ def selectdb(url):
         
         # 処理結果を処理結果クラスに挿入する
         # 商品概要の取得結果をデータクラスに挿入する
-        selectionInfo = resultData.ResultData(work[0],work[1],work[2],totalreview,work[15],work[16])
+        selectionInfo = resultData.ResultData(url,work[1],work[2],totalreview,work[15],work[16])
     
         # レビューをデータクラスに挿入する
         selectionInfo.insertpositive(work[3],work[4])

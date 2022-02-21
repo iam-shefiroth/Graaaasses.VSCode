@@ -4,16 +4,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import datetime
 import pandas as pd 
-# import chromedriver_binary
 from webdriver_manager.chrome import ChromeDriverManager
 import re
 
-
-#windows(chromedriver.exeのパスを設定)※要変更
-# chrome_path = r'z:\UserProfile\s20193085\Desktop\data\etc\chromedriver.exe'
-# chrome_path = "z:\\UserProfile\s20192060\Desktop\AI開発\chromedriver.exe"
-#mac
-#chrome_path = 'C:/Users/デスクトップ/python/selenium_test/chromedriver'
 
 # スクレイピングブロック判定
 blockJudge = "申し訳ありませんが、お客様がロボットでないことを確認させていただく必要があります。最良のかたちでアクセスしていただくために、お使いのブラウザがクッキーを受け入れていることをご確認ください。"
@@ -21,11 +14,10 @@ blockJudge = "申し訳ありませんが、お客様がロボットでないこ
 #　amazonのレビュー情報をseleniumで取得する_引数：amazonの商品URL
 def get_amazon_page_info(url):
     text = ""                               #　初期化
-    options = Options()                     #　オプションを用意
+    options = webdriver.ChromeOptions()                     #　オプションを用意
     options.add_argument('--incognito')     #　シークレットモードの設定を付与
     #　chromedriverのパスとパラメータを設定
     options.add_argument('--headless')
-    # driver = webdriver.Chrome(options=options)
     driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
     # スクレイピングブロック対策として、関係ないサイト且つ容量が少ないサイトを開く
     driver.get("https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=201909000")
